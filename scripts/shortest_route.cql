@@ -24,7 +24,7 @@ WITH extract(n in nodes(path) | n.id) as ids,
      extract(n in nodes(path) | n.name) as names,
      reduce(cost = 0, x in relationships(path) | cost + x.cost) as totalCost,
      extract(r in relationships(path) | r.shortestHopNodeIds) as shortestRouteNodeIds
-WITH ids, systemIds, names, totalCost, shortestRouteNodeIds ORDER BY totalCost LIMIT 1
+ORDER BY totalCost LIMIT 1
 UNWIND range(0, size(ids) - 1) as index
 UNWIND shortestRouteNodeIds[index] as shortestHopNodeId
 WITH ids, names, totalCost, index,
