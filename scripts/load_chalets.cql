@@ -1,10 +1,11 @@
 LOAD CSV WITH HEADERS FROM 'file:///Chalets-Chalets.csv' AS csv
 CREATE (c :Chalet {
-  id: toInteger(csv.Id),
+  sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
   name: csv.Name,
   zone: csv.Zone,
-  category: csv.Category
+  category: csv.Category,
+  for: csv.For
 })
 MERGE (z:Zone { name: csv.Zone})
 WITH c, csv.Category as category, z

@@ -1,0 +1,1 @@
+CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE
