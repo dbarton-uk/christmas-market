@@ -1,33 +1,13 @@
-# Bath Christmas Market
+# Gaming the Christmas Market
 
-Shortest route visiting all selected chalets. 
+The code is a contrived example that aims to provide a "travelling salesman" type algorithm implemented in neo4j and 
+cypher. Given an array of points as an input, the algorithm provides the optimum order for visiting these points.
 
-Step 1:
+The implementation is based on the a Christmas Market containing multiple chalets. The chalets and a 'cost' of moving
+between chalets is modelled in a neo4j graph. Given a subset of chalets, the optimum route is calculated using 
+cypher (and apoc) to determine the 'quickest' route through the chalets to purchase all presents.
 
-Explain the use case. 
 
-Step 2:
 
-Load the data
-
-Step 3:
-
-Display the data
-
-Step 4:
-
-The core algorithm
-
-	3.1 shortest path between all all node pairs
-	3.2 lowest cost paths
-	3.3. extracting the results
-	
-Step 5:
-
-Displaying the results
-
-Step 6:
-
-OR waypoints, wrap as stored procedure
 
 	
