@@ -4,8 +4,7 @@ CREATE (c :Chalet {
   number: toInteger(csv.Number),
   name: csv.Name,
   zone: csv.Zone,
-  category: csv.Category,
-  for: csv.For
+  description: csv.Description
 })
 MERGE (z:Zone { name: csv.Zone})
 WITH c, csv.Category as category, z

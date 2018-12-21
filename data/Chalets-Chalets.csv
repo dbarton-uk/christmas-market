@@ -1,61 +1,61 @@
-Id,Number,Name,Category,Zone,For
-6,165,Alpaca Sol,Clothing and Accessories,Milsom Street,
-53,88,Apple Box,Gifts and Homeware,Abbey Green and Abbey Street,
-57,17,Barty’s Trading Co.,Gifts and Homeware,Abbeygate Street,
-19,116,Bath Botanical Gin Distillery,Food and Drink,Bath Street,Her
-49,44,Bath Spa Skincare,Health and Beauty,Abbey Green and Abbey Street,
-23,127,Bohobo Aromatherapies,Health and Beauty,Bath Street,
-15,110,Caitilin’s,Home and Garden,Bath Street,
-22,126,Ceramica Cecilia Antonino,Gifts and Homeware,Bath Street,Mother-in-Law
-9,138,Chameleon,Clothing and Accessories,Union Street,
-1,150,Chi-Africa,Gifts and Homeware,Milsom Street,
-55,15,Coasting,Home and Garden,Abbeygate Street,
-28,59,Cornwall SoapBox,Health and Beauty,York Street West,
-25,47,Eat Liquorice,Food and Drink,York Street West,
-43,32,Eggnogg,Gifts and Homeware,Abbey Green and Abbey Street,Kids
-14,109,Electric Bear Brewing Company,Food and Drink,Bath Street,
-54,13,Feniton Foods,Food and Drink,Abbeygate Street,
-31,173,Firewater Gallery,Gifts and Homeware,York Street,
-4,161,Flapjackery,Food and Drink,Milsom Street,
-32,176,Forager Spirit,Food and Drink,York Street,
-29,89,Four Legged Fancies,Gifts and Homeware,York Street,Pets
-40,78,Friary Drinks,Food and Drink,Abbey Churchyard,
-2,155,Funky Feet Fashions,Clothing and Accessories,Milsom Street,
-60,24,Garden Treasures,Gifts and Homeware,Abbeygate Street,
-21,123,Harry’s Cider,Food and Drink,Bath Street,Father-in-Law
-56,16,Heart Of The Woods,Clothing and Accessories,Abbeygate Street,
-36,67,Hive Originals,Health and Beauty,Abbey Churchyard,
-59,19,Hokey Pokey,Food and Drink,Abbeygate Street,
-41,83,Honey Willow,Clothing and Accessories,Abbey Churchyard,Her
-37,68,Honey’s Cider,Food and Drink,Abbey Churchyard,
-50,45,Hullabaloo,Gifts and Homeware,Abbey Green and Abbey Street,
-5,164,Illustrate,Gifts and Homeware,Milsom Street,
-48,39,In a Pickle,Food and Drink,Abbey Green and Abbey Street,Grandad
-18,114,Keylime Design,Gifts and Homeware,Bath Street,Pets
-34,182,La De Da Living,Gifts and Homeware,York Street,
-7,167,Lavender Cottage,Home and Garden,Milsom Street,
-10,139,Leleka,Home and Garden,Union Street,
-17,112,Limelight Bath,Gifts and Homeware,Bath Street,Mother-in-Law
-46,36,Little Jack Horners,Food and Drink,Abbey Green and Abbey Street,
-39,74,Meticulous Ink,Gifts and Homeware,Abbey Churchyard,
-11,142,Millstone,Gifts and Homeware,Union Street,Grandad
-52,87,Pearl River Trading,Clothing and Accessories,Abbey Green and Abbey Street,
-3,156,Prints of Bath,Home and Garden,Milsom Street,
-47,37,Shobla Trading,Clothing and Accessories,Abbey Green and Abbey Street,
-38,71,Silkwood Traders,Gifts and Homeware,Abbey Churchyard,
-44,34,Slimbridge Soaps,Health and Beauty,Abbey Green and Abbey Street,
-12,143,Somerset Charcuterie,Food and Drink,Union Street,Father-in-Law
-30,94,Somerset Lavender,Health and Beauty,York Street,
-58,18,Spotted Cow Creations,Gifts and Homeware,Abbeygate Street,
-8,169,Supreme Sausages,Food and Drink,Milsom Street,
-24,134,Taste of Bath,Food and Drink,Bath Street,
-45,35,The Chilli Alchemist,Food and Drink,Abbey Green and Abbey Street,Him
-20,119,The Dartmoor Shepherd,Home and Garden,Bath Street,
-26,50,The Gilded Garden,Gifts and Homeware,York Street West,Grandma
-13,108,The Great British Bee Co.,Health and Beauty,Bath Street,
-35,60,Timber Treasures,Gifts and Homeware,Abbey Churchyard,
-27,57,Up To Seven,Clothing and Accessories,York Street West,
-33,181,Wild Wool,Clothing and Accessories,York Street,Grandma
-16,111,Wolfe Academy,Clothing and Accessories,Bath Street,Him
-42,184,Wood Like to Play,Gifts and Homeware,Abbey Churchyard,Kids
-51,86,Wooden Tie Company,Clothing and Accessories,Abbey Green and Abbey Street,
+Id,Number,Name,Description,Category,Zone,For
+6,165,Alpaca Sol,"Offering beautiful handmade Bolivian alpaca knitwear including socks, scarves, jumpers and beanies – their best seller! Alpaca Sol’s collection has a strong emphasis on simplicity and quality, whilst remaining true to the pieces’ provenance.",Clothing and Accessories,Milsom Street,
+53,88,Apple Box,"Apple Box brings the Cotswold countryside to your home and garden with beautiful handmade oak fretwork plaques, rustic Christmas decorations and outdoor gifts.",Gifts and Homeware,Abbey Green and Abbey Street,
+57,17,Barty’s Trading Co.,"Colourful African baskets handmade in Ghana. Willow baskets, picnic hampers and chiller baskets. Beautifully scented locally made candles, candlesticks, LED hearts and stars, plus woolly reindeer decorations and crackle glazed pots.",Gifts and Homeware,Abbeygate Street,
+19,116,Bath Botanical Gin Distillery,"Small-batch gin distillery and herbal apothecary in Widcombe, Bath, producing their signature No.1 Gin, alongside a range of fruit gins, cocktail bitters, herbal elixirs, herbal teas and DIY Kits",Food and Drink,Bath Street,Her
+49,44,Bath Spa Skincare,"A small independent company producing 100% natural and ethical skincare products addressing the concerns of ageing, eczema and sensitivities.",Health and Beauty,Abbey Green and Abbey Street,
+23,127,Bohobo Aromatherapies,"Bohobo Aromatherapies create and make natural handmade aromatherapy based products and organic skincare. Their magical little containers hold luscious concoctions to make everything feel more than wonderful! Made with intent, so with every breath you will be sure to feel the benefits.",Health and Beauty,Bath Street,
+15,110,Caitilin’s,"Inspired by the beauty of nature, Caitilin’s unique Cornish textiles are for you and your home. Including bags, aprons, scarves and baby accessories. Handmade with pride from a small studio in Cornwall.",Home and Garden,Bath Street,
+22,126,Ceramica Cecilia Antonino,"Sicilian-style ceramics and textiles, handcrafted in Bath. Colourful, decorative tableware, home textiles and other gifts in hand painted, glazed terracotta and originally-designed silk, cotton and linen, from Sicilian- taught artist Rachel Fixsen.",Gifts and Homeware,Bath Street,Mother-in-Law
+9,138,Chameleon,"Chameleon offer unique handmade clothing and accessories with an unexpected twist! Original designs, boundless versatility, and endless looks all in a wonderful colour palette.",Clothing and Accessories,Union Street,
+1,150,Chi-Africa,"Uniquely handmade, recycled, reused, reclaimed garden sculpture, sustainably sourced predominately from Zimbabwe.",Gifts and Homeware,Milsom Street,
+55,15,Coasting,Marble coasters and trivets made in the UK. A wide range of designs perfect for the home and workplace.,Home and Garden,Abbeygate Street,
+28,59,Cornwall SoapBox,"Pamper your family and friends with Cornwall SoapBox’s handmade soaps, candles and skincare products. All are beautifully fragranced and lovingly made at their workshop in Cornwall.",Health and Beauty,York Street West,
+25,47,Eat Liquorice,"Liquorice lovers new and old will love Eat Liquorice’s huge selection of delicious liquorice, including sweet, salty, fruity, gluten- and sugar-free. Great gifts for you and your loved ones.",Food and Drink,York Street West,
+43,32,Eggnogg,"Quirky and award-winning colour-in products for children. From best-selling paper colour-in fancy dress to table cloths, and colour-in textile pencil cases to kit bags.",Gifts and Homeware,Abbey Green and Abbey Street,Kids
+14,109,Electric Bear Brewing Company,"A Bath-based microbrewery making delicious, eclectic, award winning modern British Crafts beers.",Food and Drink,Bath Street,
+54,13,Feniton Foods,"Handmade luxury fudges in 50 flavours including Christmas cake and chili chocolate, plus a range of sauces, from salted caramel to Somerset Brandy, and West Country spiced damson and elderflower cordials.",Food and Drink,Abbeygate Street,
+31,173,Firewater Gallery,Bath-based Firewater Gallery create beautiful and unique modern map art and contemporary landscapes. They have drawn over 200 local and international cities so really have something for everyone.,Gifts and Homeware,York Street,
+4,161,Flapjackery,Luxury handmade flapjacks made in Flapjackery’s bakery on the edge of Dartmoor.,Food and Drink,Milsom Street,
+32,176,Forager Spirit,"Handcrafted small-batch infused spirits, liqueurs and premixed cocktails made from foraged, local or ethically-sourced organic ingredients. Spirits are made by the bottle, in beautiful gift packs or with a handmade engraved pewter hip flask.",Food and Drink,York Street,
+29,89,Four Legged Fancies,"Four Legged Fancies are an award-winning dog bakery making natural, handmade treats for dogs with a fun twist.",Gifts and Homeware,York Street,Pets
+40,78,Friary Drinks,"A small, independent, family-run business, Friary Drinks handcraft their liqueurs in the heart of Somerset and use traditional recipes created over 20 years ago to create flavours such as ginger and toffee.",Food and Drink,Abbey Churchyard,
+2,155,Funky Feet Fashions,"Funky Feet Fashions design and make children’s character shoes and hats from newborn to seven years, plus personalised blankets, comforters and beanbags.",Clothing and Accessories,Milsom Street,
+60,24,Garden Treasures,An inspiring range of rustic garden gifts and accessories including unique birdhouses and candles.,Gifts and Homeware,Abbeygate Street,
+21,123,Harry’s Cider,Award-winning premium cider handcrafted in the heart of Somerset and made by father and son.,Food and Drink,Bath Street,Father-in-Law
+56,16,Heart Of The Woods,Wooden jewellery made from a range of natural woods and laminated dyed wood veneers.,Clothing and Accessories,Abbeygate Street,
+36,67,Hive Originals,Handcrafted natural skincare made using honey and beeswax from hives on the Wiltshire/Somerset border. Unique formulas blending honey and botanical oils capturing all that nature has to offer.,Health and Beauty,Abbey Churchyard,
+59,19,Hokey Pokey,"The Chocolate Society, based just outside Wincanton in Somerset, create crunchy chocolate-covered honeycomb. Hand made in small batches, each piece is generously coated in two layers of the finest, luxurious French chocolate.",Food and Drink,Abbeygate Street,
+41,83,Honey Willow,"Rhiannon Hamilton and her team have been handcrafting personalised jewellery in Bath since 2010. Named after her daughters, Honey Willow celebrates meaningful relationships with unique gifts, perfect for Christmas.",Clothing and Accessories,Abbey Churchyard,Her
+37,68,Honey’s Cider,Honey’s Cider make fantastic craft cider just three miles from Bath. They have a range of gift options including mulled cider kits and attractive trugs.,Food and Drink,Abbey Churchyard,
+50,45,Hullabaloo,Wooden sound animals and interesting musical and percussion instruments from around the world. Anyone can play!,Gifts and Homeware,Abbey Green and Abbey Street,
+5,164,Illustrate,"Illustrate is brand dedicated to supporting emerging artists by creating a platform to transform art into fashion. They offer sustainable and exclusively decorated products, and pride themselves on quality.",Gifts and Homeware,Milsom Street,
+48,39,In a Pickle,"Handmade artisan preserves in a range of 21 delicious flavours, from award-winning In a Pickle Lily to zesty Passionfruit Curd.",Food and Drink,Abbey Green and Abbey Street,Grandad
+18,114,Keylime Design,"Quality cushions, gifts, cards designed and handmade right here in Bath. Animal themes abound, including the ever popular dogs and cats collections. New for 2018: something designed especially for children.",Gifts and Homeware,Bath Street,Pets
+34,182,La De Da Living,La De Da is the home of award-winning stamped vintage cutlery. They pride themselves in making all their items at their HQ in Cheltenham.,Gifts and Homeware,York Street,
+7,167,Lavender Cottage,"Offering glorious handcrafted lavender heart wreaths, baby pink Gypsophila wreaths, dried Hydrangea stags heads, lavender sachets and scented pot pourri, ceramic heart plaques, and Christmas door stops filled with lavender.",Home and Garden,Milsom Street,
+10,139,Leleka,"Ceramic bowls, mosaic lamps, handmade necklace and bracelets, wooden and pearl jewellery boxes, and handmade iconas.",Home and Garden,Union Street,
+17,112,Limelight Bath,"Limelight Bath makes gorgeous hand poured scented candles and reed diffusers, using the highest quality fragrances and exquisite packaging to create luxury products at an affordable price.",Gifts and Homeware,Bath Street,Mother-in-Law
+46,36,Little Jack Horners,"Handmade sausage rolls using high welfare, free range and organic meat and dairy from East Somerset farms and smallholdings.",Food and Drink,Abbey Green and Abbey Street,
+39,74,Meticulous Ink,"Meticulous Ink are a letterpress printer and fine stationery company, creating high-end paper goods designed and printed locally at their store on Walcot Street.",Gifts and Homeware,Abbey Churchyard,
+11,142,Millstone,Beautiful salt and pepper mills in the shape of traditional chess pieces and the Church Key bottle opener hidden within the pages of an old leather book.,Gifts and Homeware,Union Street,Grandad
+52,87,Pearl River Trading,Liese Redstone lovingly makes individually designed jewellery using beautiful natural pearls and semi-precious gemstones in her local workshop.,Clothing and Accessories,Abbey Green and Abbey Street,
+3,156,Prints of Bath,"Chloe Moore is a photographer living in Bath who loves to capture her hometown. Chloe’s work has been featured in Bath Life and Digital Camera Magazine, and is frequently shared on social media.",Home and Garden,Milsom Street,
+47,37,Shobla Trading,"Local, independent jewellers designing individual handmade silver jewellery, working closely with producers to ensure the highest quality and ethical standards. The best on quality, price and choice.",Clothing and Accessories,Abbey Green and Abbey Street,
+38,71,Silkwood Traders,"Known for their popular wine bottle holders, Silkwood Traders also make a variety of wooden gifts including tableware, traditional vases, bowls and candle holders. Many of their products come in a handmade silk gift box.",Gifts and Homeware,Abbey Churchyard,
+44,34,Slimbridge Soaps,"The perfect pamper gifts – traditional, artisan handmade soaps, soaks and balms lovingly made at the foot of the Cotswolds since 2003.",Health and Beauty,Abbey Green and Abbey Street,
+12,143,Somerset Charcuterie,"Somerset Charcuterie Ltd produce salami, chorizo and cured meats using traditional artisan Italian and Spanish methods, in the West Country.",Food and Drink,Union Street,Father-in-Law
+30,94,Somerset Lavender,"Somerset Lavender is grown and harvested on their farm in Faulkland, near Bath. They distill their own essential oil and use it to make a wide range of natural lavender products, from hand cream and lavender bags to home decorations.",Health and Beauty,York Street,
+58,18,Spotted Cow Creations,"A unique range of silk daisy, buttercup and poppy chains, plus fairies in jars, flower fairy sets, trinket boxes, handmade tutus and butterfly headbands.",Gifts and Homeware,Abbeygate Street,
+8,169,Supreme Sausages,"Established in 1990, Supreme Sausages manufacture the finest British quality and speciality pork sausages using traditional methods. They offer a wide variety of flavours, samples of which are available to try before you purchase. Ask about their unique Sausage Club membership either for yourself or as an unusual gift!",Food and Drink,Milsom Street,
+24,134,Taste of Bath,"Taste of Bath specialise in making hampers of the best artisan food and drink, made within 15 miles of Bath. Give a little Taste of Bath to your loved ones this Christmas, whilst supporting small local Bath producers – Christmas never tasted so good. Hampers are available from just £25.",Food and Drink,Bath Street,
+45,35,The Chilli Alchemist,"Local producers of high quality, handmade chilli sauces packaged in hand waxed apothecary bottles.",Food and Drink,Abbey Green and Abbey Street,Him
+20,119,The Dartmoor Shepherd,"Handcrafted sheepskin accessories and furnishings, created in collaboration with a Somerset-based family business and the oldest working tannery in Britain. The Dartmoor Shepherd are the last in the world to farm all three of Dartmoor’s native long wool breeds on the rugged hills of the beautiful Dartmoor National Park.",Home and Garden,Bath Street,
+26,50,The Gilded Garden,"Hand forged metalwork for the garden, all made locally.",Gifts and Homeware,York Street West,Grandma
+13,108,The Great British Bee Co.,"Gift of the year 2018 winners! Wiltshire bee farmers turning their harvest into unique honey gifts, beeswax candles and nationally acclaimed Beeswax and honey handcare products.",Health and Beauty,Bath Street,
+35,60,Timber Treasures,"Handmade wooden gifts including puzzle boxes, plaques, rustic garden ware, children’s toys and kitchenware made from English hardwoods.",Gifts and Homeware,Abbey Churchyard,
+27,57,Up To Seven,"Handmade children’s and baby clothes, strawberry and Christmas Puddings hats, reversible dresses and dungarees. Hand knitted sweaters and jackets, blankets, Taggies, bibs all made here in Bath.",Clothing and Accessories,York Street West,
+33,181,Wild Wool,"Luxury British and Irish-made woollen throws and scarves, gorgeous cashmere ponchos, bamboo socks and much more, all wrapped up in stylish, recycled packaging to provide the perfect present.",Clothing and Accessories,York Street,Grandma
+16,111,Wolfe Academy,"Wolfe Academy is an independent clothing brand based in the South West, designing and producing ethical apparel and accessories for those inspired by the outdoor life.",Clothing and Accessories,Bath Street,Him
+42,184,Wood Like to Play,A range of handmade educational jigsaw puzzles for children of all ages that make perfect gifts for Christmas.,Gifts and Homeware,Abbey Churchyard,Kids
+51,86,Wooden Tie Company,Handmade wooden ties and wooden bow ties make unique and attention-grabbing Christmas presents for men.,Clothing and Accessories,Abbey Green and Abbey Street,
