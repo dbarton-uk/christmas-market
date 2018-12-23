@@ -1,33 +1,34 @@
-WITH  [111, 83, 181, 39, 126, 143, 32, 89] AS chaletNumbers
-UNWIND chaletNumbers as from
-WITH from,
-     filter(s in chaletNumbers where s > from) as tos,
-     chaletNumbers
-UNWIND tos as to
-MATCH (c1:Chalet { number: from})
-MATCH (c2:Chalet { number: to})
+WITH  [ 111, 83, 181, 39, 126, 143, 32, 89] AS chaletNumbers
+MATCH (c:Chalet) where c.number in chaletNumbers
+WITH collect(c) as chalets, chaletNumbers
+UNWIND chalets as c1
+WITH c1,
+     filter(c in chalets where c.number > c1.number) as c2s,
+     chaletNumbers,
+     chalets
+UNWIND c2s as c2
 CALL algo.shortestPath.stream(c1, c2, 'cost', {relationshipQuery: 'LINKS_TO'}) YIELD nodeId, cost
 WITH c1,
      c2,
      max(cost) as totalCost,
-     chaletNumbers,
-     collect(nodeId) as shortestHopNodeIds
+     collect(nodeId) as shortestHopNodeIds,
+     chalets
 MERGE (c1) -[r:SHORTEST_ROUTE_TO]- (c2)
 SET r.cost = totalCost
 SET r.shortestHopNodeIds = shortestHopNodeIds
 WITH c1,
      c2,
-     (size(chaletNumbers) - 1) as level
-CALL apoc.path.expandConfig(c1, {relationshipFilter: 'SHORTEST_ROUTE_TO', minLevel: level, maxLevel: level, terminatorNodes: [c2], uniqueness: 'NODE_PATH'}) YIELD path
-WITH extract(n in nodes(path) | n.number) as chaletNumbers,
+     (size(chalets) - 1) as level,
+     chalets
+CALL apoc.path.expandConfig(c1, {relationshipFilter: 'SHORTEST_ROUTE_TO', minLevel: level, maxLevel: level, whitelistNodes: chalets, terminatorNodes: [c2], uniqueness: 'NODE_PATH'}) YIELD path
+WITH nodes(path) as orderedChalets,
      extract(n in nodes(path) | id(n)) as ids,
-     extract(n in nodes(path) | n.name) as names,
      reduce(cost = 0, x in relationships(path) | cost + x.cost) as totalCost,
      extract(r in relationships(path) | r.shortestHopNodeIds) as shortestRouteNodeIds
 ORDER BY totalCost LIMIT 1
-UNWIND range(0, size(chaletNumbers) - 1) as index
+UNWIND range(0, size(orderedChalets) - 1) as index
 UNWIND shortestRouteNodeIds[index] as shortestHopNodeId
-WITH chaletNumbers, names, totalCost, index,
+WITH orderedChalets, totalCost, index,
      CASE WHEN shortestRouteNodeIds[index][0] = ids[index]
      THEN tail(collect(shortestHopNodeId))
        ELSE tail(reverse(collect(shortestHopNodeId)))
@@ -35,4 +36,4 @@ WITH chaletNumbers, names, totalCost, index,
      ORDER BY index
 UNWIND orderedHopNodeIds as orderedHopNodeId
 MATCH (c: Chalet) where id(c) = orderedHopNodeId
-RETURN names, chaletNumbers, [chaletNumbers[0]] + collect(c.number) as chaletRoute, totalCost
+RETURN extract(c in orderedChalets | c.name) as names, extract(c in orderedChalets | c.number) as chaletNumbers, [orderedChalets[0].number] + collect(c.number) as chaletRoute, totalCost
