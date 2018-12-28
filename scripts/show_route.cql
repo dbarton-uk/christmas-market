@@ -12,8 +12,8 @@ CALL apoc.create.vRelationship(enter, 'VIA', {}, vChalets[apoc.coll.indexOf(chal
 CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, lastChalet)], 'VIA', {}, exit ) YIELD rel as exitingVia
 WITH apoc.coll.pairs(route) as hops, chalets, vChalets, enter, exit, enteringVia, exitingVia
 UNWIND hops as hop
-MATCH (from :Chalet {number: hop[0]}) -[:LINKS_TO]- (to :Chalet {number: hop[1]})
-CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, from)], 'NEXT', {}, vChalets[apoc.coll.indexOf(chalets, to)] ) YIELD rel as next
+MATCH (from :Chalet {number: hop[0]}) -[l:LINKS_TO]- (to :Chalet {number: hop[1]})
+CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, from)], 'NEXT', properties(l), vChalets[apoc.coll.indexOf(chalets, to)] ) YIELD rel as next
 CALL apoc.create.vNode([null], { name: to.zone }) YIELD node as zone
 CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)] ) YIELD rel as hosts
 WITH chalets, vChalets, enter, exit, enteringVia, exitingVia, collect(next) as nexts, hops
