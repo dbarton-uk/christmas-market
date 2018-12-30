@@ -1,12 +1,14 @@
-# Gaming the Christmas Market
+# Christmas Market
 
-The code is a contrived example that aims to provide a "travelling salesman" type algorithm implemented in neo4j and 
-cypher. Given an array of points as an input, the algorithm provides the optimum order for visiting these points.
+This mini project was based on the Bath Christmas Market 2018. It defines a subset of chalets and a contrived set of 
+costs that define how expensive it is to move between chalets. The project at these use cases:
 
-The implementation is based on the a Christmas Market containing multiple chalets. The chalets and a 'cost' of moving
-between chalets is modelled in a neo4j graph. Given a subset of chalets, the optimum route is calculated using 
-cypher (and apoc) to determine the 'quickest' route through the chalets to purchase all presents.
+1) Given a set of chalets to visit, define an optimum travel route between the chalets such that each of the set is 
+visited at least once.
 
+2) Given the optimum travel route, provide a user friendly visual of the route.
+
+The project is written against the Neo4j graph database, using Cypher and APOC.
 
 
 
