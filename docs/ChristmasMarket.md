@@ -53,7 +53,8 @@ CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
 
 ```cypher
 LOAD CSV WITH HEADERS FROM 
-	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
+	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' 
+	AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
@@ -88,7 +89,8 @@ available in Neo4j Desktop. The zone is also redundant on the chalet, for conven
 
 ```cypher
 LOAD CSV WITH HEADERS FROM 
-	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Links-Links.csv' AS csv
+	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Links-Links.csv' 
+	AS csv
 MATCH (c1:Chalet {sequence: toInteger(csv.from)})
 MATCH (c2:Chalet {sequence: toInteger(csv.to)})
 MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
@@ -101,7 +103,7 @@ A cost is defined for each link, which is used by the algorithm when calculating
 
 3. Check the data
 
-So, let's what we have. First let's run [Show Chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/show_chalets.cql)
+So, let's what we have. First let's run [Show Chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/show_chalets.cql).
 
 ```cypher
 MATCH (c :Chalet)
@@ -111,7 +113,7 @@ RETURN c.number as Number, c.name as Name, c.category as Category, c.zone as Zon
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/docs/chalets_table.png?raw=true "Table of Chalets")
 
-(thumbs_up)
+:thumbsup:
 
 
 #### Visuals
