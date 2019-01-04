@@ -1,4 +1,4 @@
-##Introduction
+## Introduction
 
 The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, where the city of Bath is 
 transformed into a veritable Winter Wonterland with a selection of gift chalets for all your Christmas purchasing 
@@ -20,7 +20,7 @@ the set is visited at least once.
  
 2. Visualize Route: Given the optimum route, provide a user friendly visual of the route.
 
-##Setting up the Data
+## Setting up the Data
 
 ### Overview
 
@@ -33,12 +33,45 @@ optimal route for a set of chalets.
 The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
 extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/data).
 
-The diagram below provides an overview of the `db.schema()`.
-
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/docs/db_schema.png?raw=true "the schema")
 
 
 ### Create constraints and indexes
+
+Run [create_constraints.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/create_constraints.cql)
+to setup constraints and indexes. 
+
+`CREATE CONSTRAINT ON (z:Zone) ASSERT (z.name) IS NODE KEY;`
+
+`CREATE CONSTRAINT ON (c:Chalet) ASSERT (c.number) IS NODE KEY;`
+
+`CREATE CONSTRAINT ON (c:Chalet) ASSERT c.name IS UNIQUE;`
+
+`CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;`
+
+### Loading the data
+
+First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
+
+`// Load Chalets
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
+CREATE (c :Chalet {
+  sequence: toInteger(csv.Id),
+  number: toInteger(csv.Number),
+  name: csv.Name,
+  zone: csv.Zone,
+  description: csv.Description
+})
+MERGE (z:Zone { name: csv.Zone})
+WITH c, csv.Category as category, z
+CALL apoc.create.addLabels( id(c), [apoc.text.capitalize(apoc.text.camelCase(category))]) YIELD node
+MERGE (z) -[:HOSTS]-> (c)`
+
+
+
+
+
+
 
 
 
