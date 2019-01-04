@@ -32,7 +32,7 @@ optimal route to take when visiting a given set of chalets.
 The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
 extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/data).
 
-![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/docs/db_schema.png?raw=true "the schema")
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/docs/db_schema.png?raw=true "Database Schema")
 
 
 ### Create constraints and indexes
@@ -60,7 +60,7 @@ CREATE (c :Chalet {
   name: csv.Name,
   description: csv.Description,
   zone: csv.Zone,
-  category: csv.category
+  category: csv.Category
 })
 MERGE (z:Zone { name: csv.Zone})
 WITH c, csv.Category as category, z
@@ -101,7 +101,17 @@ A cost is defined for each link, which is used by the algorithm when calculating
 
 3. Check the data
 
+So, let's what we have. First let's run [Show Chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/show_chalets.cql)
 
+```cypher
+MATCH (c :Chalet)
+RETURN c.number as Number, c.name as Name, c.category as Category, c.zone as Zone
+  ORDER BY c.zone, c.category, c.number
+```
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/docs/chalets_table.png?raw=true "Table of Chalets")
+
+(thumbs_up)
 
 
 #### Visuals

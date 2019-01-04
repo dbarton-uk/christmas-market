@@ -6,7 +6,7 @@ CREATE (c :Chalet {
   name: csv.Name,
   description: csv.Description,
   zone: csv.Zone,
-  category: csv.category
+  category: csv.Category
 
 })
 MERGE (z:Zone { name: csv.Zone})
