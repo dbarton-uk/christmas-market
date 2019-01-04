@@ -4,8 +4,10 @@ CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
   name: csv.Name,
+  description: csv.Description,
   zone: csv.Zone,
-  description: csv.Description
+  category: csv.category
+
 })
 MERGE (z:Zone { name: csv.Zone})
 WITH c, csv.Category as category, z

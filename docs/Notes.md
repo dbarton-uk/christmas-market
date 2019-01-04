@@ -26,7 +26,7 @@ the set is visited at least once.
 The christmas market is split into zones, each defined by a unique name. A zone hosts a number of chalets, each with a 
 unique name and number. A chalet has a description and is categorized by the type of gift that it sells. Links between 
 chalets have been manually defined, with a cost assigned to each link. The link with its cost is used to determine the 
-optimal route for a set of chalets.
+optimal route to take when visiting a given set of chalets.
  
 60 chalets across 8 zones are defined, with the data sourced originally sourced from [The Bath Christmas Market website](https://bathchristmasmarket.co.uk) 
 The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
@@ -58,8 +58,9 @@ CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
   name: csv.Name,
+  description: csv.Description,
   zone: csv.Zone,
-  description: csv.Description
+  category: csv.category
 })
 MERGE (z:Zone { name: csv.Zone})
 WITH c, csv.Category as category, z
@@ -96,9 +97,12 @@ MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
 `Set 87 properties, created 87 relationships, completed after 347 ms.`
 
 The script creates the links between chalets based on the link csv data in the [repository](https://github.com/dbarton-uk/christmas-market/blob/master/data/Links-Links.csv)
-A cost is defined for each link. This cost is used in the algorithm that calculated the optimum route.
+A cost is defined for each link, which is used by the algorithm when calculating an optimal route.
 
 3. Check the data
+
+
+
 
 #### Visuals
 
