@@ -1,17 +1,16 @@
 ## Introduction
 
-The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, where the city of Bath is 
+The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, when the city of Bath is 
 transformed into a veritable Winter Wonterland with a selection of gift chalets for all your Christmas purchasing 
-requirements. Or so they would have you believe. For me, long in the tooth and a little bit grumpy, it's a bit of a log  
-jam. People shuffling between chalets with their Christmas spirit disappearing faster than the mince pies 
-and hot toddy. When it comes to Christmas shopping, high focus efficiency is what is required! 
+requirements. Or so they would have you believe. For me, long in the tooth and a little bit grumpy, it's a log jam - people 
+shuffling between chalets with their Christmas spirit disappearing faster than the mince pies and hot toddy. When it comes 
+to Christmas shopping, a high focus on efficiency is what is required! 
 
-This project uses the Neo4j Graph Database to determine the optimum route through the christmas market, given 
-a set of chalets to purchase from. It gives a user friendly visual of the route, using Neo4j Desktop, making use of 
-virtual nodes and relationships.
+This mini project uses the Neo4j Graph Database to determine the optimum route through the christmas market, given 
+a set of mandatory chalets to purchase from. It also shows a user friendly visual of the route, using Neo4j Desktop and 
+making use of APOC capabilities with virtual nodes and relationships.
 
 Full source code, licensed under Apache License 2.0 is [available](https://github.com/dbarton-uk/christmas-market).
-
  
 **Use Cases**
 
