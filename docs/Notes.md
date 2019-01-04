@@ -53,7 +53,8 @@ CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
 1. First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
 
 ```cypher
-LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
+LOAD CSV WITH HEADERS FROM 
+	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
@@ -70,10 +71,10 @@ MERGE (z) -[:HOSTS]-> (c)
 
 The load chalet script does the following:
 
-- Creates chalet nodes based on [chalet csv data]([csv](https://github.com/dbarton-uk/christmas-market/blob/master/data/Chalets-Chalets.csv)
+- Creates chalet nodes based on [chalet csv data](https://github.com/dbarton-uk/christmas-market/blob/master/data/Chalets-Chalets.csv)
 in the github repository.
 
-- Create zone nodes based on zone data, which embedded in the [chalet csv](https://github.com/dbarton-uk/christmas-market/blob/master/data/Chalets-Chalets.csv).
+- Create zone nodes based on zone data, embedded in the chalets csv.
 
 - Adds category labels to chalet nodes. 
 
@@ -86,7 +87,8 @@ available in Neo4j Desktop. The zone is also redundant on the chalet, for conven
 2. Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
 
 ```cypher
-LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Links-Links.csv' AS csv
+LOAD CSV WITH HEADERS FROM 
+	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Links-Links.csv' AS csv
 MATCH (c1:Chalet {sequence: toInteger(csv.from)})
 MATCH (c2:Chalet {sequence: toInteger(csv.to)})
 MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
