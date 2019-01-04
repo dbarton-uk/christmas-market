@@ -1,0 +1,5 @@
+// Create constraints
+CREATE CONSTRAINT ON (z:Zone) ASSERT (z.name) IS NODE KEY;
+CREATE CONSTRAINT ON (c:Chalet) ASSERT (c.number) IS NODE KEY;
+CREATE CONSTRAINT ON (c:Chalet) ASSERT c.name IS UNIQUE;
+CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;

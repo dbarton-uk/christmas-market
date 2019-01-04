@@ -1,1 +1,0 @@
-CREATE CONSTRAINT ON (c:Chalet) ASSERT (c.number) IS NODE KEY

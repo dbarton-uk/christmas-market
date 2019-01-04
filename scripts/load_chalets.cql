@@ -1,4 +1,5 @@
-LOAD CSV WITH HEADERS FROM 'file:///Chalets-Chalets.csv' AS csv
+// Load Chalets
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),

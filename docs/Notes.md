@@ -9,6 +9,9 @@ and hot toddy. When it comes to Christmas shopping, high focus efficiency is wha
 This project uses the Neo4j Graph Database to determine the optimum route through the christmas market, given 
 a set of chalets to purchase from. It gives a user friendly visual of the route, using Neo4j Desktop, making use of 
 virtual nodes and relationships.
+
+Full source code, licensed under Apache License 2.0 is [available](https://github.com/dbarton-uk/christmas-market).
+
  
 **Use Cases**
 
@@ -19,11 +22,23 @@ the set is visited at least once.
 
 ##Setting up the Data
 
+### Overview
+
+The christmas market is split into zones, each defined by a unique name. A zone hosts a number of chalets, each with a 
+unique name and number. A chalet has a description and is categorized by the type of gift that it sells. Links between 
+chalets have been manually defined, with a cost assigned to each link. The link with its cost is used to determine the 
+optimal route for a set of chalets.
+ 
+60 chalets across 8 zones are defined, with the data sourced originally sourced from [The Bath Christmas Market website](https://bathchristmasmarket.co.uk) 
+The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
+extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/data).
+
 The diagram below provides an overview of the `db.schema()`.
 
-Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/docs/db_schema.png?raw=true "the schema")
 
+
+### Create constraints and indexes
 
 
 
@@ -31,9 +46,6 @@ Inline-style:
 
 
 -- Loading it up
--- The spreadsheet
--- Explanation of properties
--- Nice picture of the metadata
 -- Using categories
 
 3) Visualising the data. Select presents.

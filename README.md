@@ -1,6 +1,7 @@
 # Christmas Market
 
-The project is based on the [Bath Christmas Market 2018](https://bathchristmasmarket.co.uk). It looks at the following use cases:
+The project is inspired by the [Bath Christmas Market 2018](https://bathchristmasmarket.co.uk). It aims to address these
+use cases:
 
 1) Given a set of chalets to visit, define an optimum travel route between the chalets such that each of the set is
 visited at least once.
