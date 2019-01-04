@@ -41,19 +41,18 @@ extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/da
 Run [create_constraints.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/create_constraints.cql)
 to setup constraints and indexes. 
 
-`CREATE CONSTRAINT ON (z:Zone) ASSERT (z.name) IS NODE KEY;`
-
-`CREATE CONSTRAINT ON (c:Chalet) ASSERT (c.number) IS NODE KEY;`
-
-`CREATE CONSTRAINT ON (c:Chalet) ASSERT c.name IS UNIQUE;`
-
-`CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;`
+```cypher
+CREATE CONSTRAINT ON (z:Zone) ASSERT (z.name) IS NODE KEY;
+CREATE CONSTRAINT ON (c:Chalet) ASSERT (c.number) IS NODE KEY;
+CREATE CONSTRAINT ON (c:Chalet) ASSERT c.name IS UNIQUE;
+CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
+```
 
 ### Loading the data
 
-First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
+1. First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
 
-`// Load Chalets
+```cypher
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
@@ -65,27 +64,50 @@ CREATE (c :Chalet {
 MERGE (z:Zone { name: csv.Zone})
 WITH c, csv.Category as category, z
 CALL apoc.create.addLabels( id(c), [apoc.text.capitalize(apoc.text.camelCase(category))]) YIELD node
-MERGE (z) -[:HOSTS]-> (c)`
+MERGE (z) -[:HOSTS]-> (c)
+```
+`Added 68 labels, created 68 nodes, set 308 properties, created 60 relationships, completed after 540 ms.`
 
+The load chalet script does the following:
 
+- Creates chalet nodes based on [chalet csv data]([csv](https://github.com/dbarton-uk/christmas-market/blob/master/data/Chalets-Chalets.csv)
+in the github repository.
 
+- Create zone nodes based on zone data, which embedded in the [chalet csv](https://github.com/dbarton-uk/christmas-market/blob/master/data/Chalets-Chalets.csv).
 
+- Adds category labels to chalet nodes. 
 
+- Links zones to chalets with a `:HOSTS` relationship.
 
+The chalets are split into 5 categories: Clothing and Accessories, Food and Drink, Gifts and Homeware, Health and Beauty 
+and Home and Garden. These categories were added as labels rather than attributes to improve the visualization options 
+available in Neo4j Desktop. The zone is also redundant on the chalet, for convenience.
 
+2. Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
 
+```cypher
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Links-Links.csv' AS csv
+MATCH (c1:Chalet {sequence: toInteger(csv.from)})
+MATCH (c2:Chalet {sequence: toInteger(csv.to)})
+MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
+```
 
+`Set 87 properties, created 87 relationships, completed after 347 ms.`
 
+The script creates the links between chalets based on the link csv data in the [repository](https://github.com/dbarton-uk/christmas-market/blob/master/data/Links-Links.csv)
+A cost is defined for each link. This cost is used in the algorithm that calculated the optimum route.
 
+3. Check the data
 
--- Loading it up
--- Using categories
+#### Visuals
 
-3) Visualising the data. Select presents.
+### Optimizing the route
 
-4) High level explanation of algorithm
+#### Select presents
+#### Explanation of algorithm
+#### Visual of route
 
-5) Description of algorithm implementation
+### Route visualisation
+### Explanation of visual
 
-6) Route map visualization, based on algorithm results
 
