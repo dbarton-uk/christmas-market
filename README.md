@@ -4,9 +4,9 @@
 
 The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, when the city of Bath is 
 transformed into a veritable Winter Wonterland with a selection of gift chalets for all your Christmas purchasing 
-requirements. Or so they would have you believe. For me, long in the tooth and a little bit grumpy, it's a log jam - people 
-shuffling between chalets with their Christmas spirit disappearing faster than the mince pies and hot toddy. When it comes 
-to Christmas shopping, a high focus on efficiency is what is required! 
+requirements. Or at least, that's one perspective. For me, long in the tooth and a little bit grumpy, it's not quite so
+evocative. A log jam of people shuffling between chalets with their Christmas spirit disappearing faster than the mince 
+pies and hot toddy. When it comes to Christmas shopping, a high focus on efficiency is what is required! 
 
 This mini project uses the Neo4j Graph Database to determine the optimum route through the christmas market, given 
 a set of mandatory chalets to purchase from. It also shows a user friendly visual of the route, using Neo4j Desktop and 
@@ -34,8 +34,7 @@ optimal route to take when visiting a given set of chalets.
 The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
 extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/data).
 
-![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/db_schema.png?raw=true "Database Schema")
-
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/Bath-Christmas-Market-Map-2018.png?raw=true "Map")
 
 ### Create constraints and indexes
 
@@ -103,9 +102,13 @@ MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
 The script creates the links between chalets based on the link csv data in the [repository](https://github.com/dbarton-uk/christmas-market/blob/master/data/Links-Links.csv)
 A cost is defined for each link, which is used by the algorithm when calculating an optimal route.
 
+And here is the schema. For clarity, category labels aren't shown.
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/schema.png?raw=true "Database Schema")
+
 3. Check the data
 
-So, let's what we have. First let's run [Show Chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/show_chalets.cql).
+Ok, So, let's see what we have. First run [get chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/get_chalets.cql).
 
 ```cypher
 MATCH (c :Chalet)
@@ -116,6 +119,10 @@ RETURN c.number as Number, c.name as Name, c.category as Category, c.zone as Zon
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/chalets_table.png?raw=true "Table of Chalets")
 
 :thumbsup:
+
+Next run [show links](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/get_chalets.cql)
+
+
 
 
 #### Visuals
