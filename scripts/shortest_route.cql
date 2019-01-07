@@ -25,7 +25,7 @@ WITH nodes(path) as orderedChalets,
      extract(n in nodes(path) | id(n)) as ids,
      reduce(cost = 0, x in relationships(path) | cost + x.cost) as totalCost,
      extract(r in relationships(path) | r.shortestHopNodeIds) as shortestRouteNodeIds
-ORDER BY totalCost LIMIT 1
+  ORDER BY totalCost LIMIT 1
 UNWIND range(0, size(orderedChalets) - 1) as index
 UNWIND shortestRouteNodeIds[index] as shortestHopNodeId
 WITH orderedChalets, totalCost, index,
@@ -33,7 +33,7 @@ WITH orderedChalets, totalCost, index,
      THEN tail(collect(shortestHopNodeId))
        ELSE tail(reverse(collect(shortestHopNodeId)))
        END as orderedHopNodeIds
-     ORDER BY index
+  ORDER BY index
 UNWIND orderedHopNodeIds as orderedHopNodeId
 MATCH (c: Chalet) where id(c) = orderedHopNodeId
 RETURN extract(c in orderedChalets | c.name) as names, extract(c in orderedChalets | c.number) as chaletNumbers, [orderedChalets[0].number] + collect(c.number) as chaletRoute, totalCost

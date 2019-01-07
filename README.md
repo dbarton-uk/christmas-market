@@ -34,8 +34,6 @@ optimal route to take when visiting a given set of chalets.
 The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
 extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/data).
 
-![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/Bath-Christmas-Market-Map-2018.png?raw=true "Map")
-
 ### Create constraints and indexes
 
 Run [create_constraints.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/create_constraints.cql)
@@ -53,9 +51,7 @@ CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
 1. First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
 
 ```cypher
-LOAD CSV WITH HEADERS FROM 
-	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' 
-	AS csv
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
@@ -66,7 +62,10 @@ CREATE (c :Chalet {
 })
 MERGE (z:Zone { name: csv.Zone})
 WITH c, csv.Category as category, z
-CALL apoc.create.addLabels( id(c), [apoc.text.capitalize(apoc.text.camelCase(category))]) YIELD node
+CALL apoc.create.addLabels( id(c), 
+		[apoc.text.capitalize(apoc.text.camelCase(category)), 
+	 	 apoc.text.capitalize(apoc.text.camelCase(z.name))]) 
+YIELD node
 MERGE (z) -[:HOSTS]-> (c)
 ```
 `Added 68 labels, created 68 nodes, set 308 properties, created 60 relationships, completed after 540 ms.`
@@ -80,11 +79,13 @@ in the github repository.
 
 - Adds category labels to chalet nodes. 
 
+- Adds zone labels to chalet nodes
+
 - Links zones to chalets with a `:HOSTS` relationship.
 
 The chalets are split into 5 categories: Clothing and Accessories, Food and Drink, Gifts and Homeware, Health and Beauty 
 and Home and Garden. These categories were added as labels rather than attributes to improve the visualization options 
-available in Neo4j Desktop. The zone is also redundant on the chalet, for convenience.
+available in Neo4j Desktop. Zone names are also added as labels to enhance Neo4j Desktop visualization options.
 
 2. Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
 
@@ -108,7 +109,7 @@ And here is the schema. For clarity, category labels aren't shown.
 
 3. Check the data
 
-Ok, So, let's see what we have. First run [get chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/get_chalets.cql).
+Ok, so, let's see what we have. First run [get chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/get_chalets.cql).
 
 ```cypher
 MATCH (c :Chalet)
@@ -118,11 +119,30 @@ RETURN c.number as Number, c.name as Name, c.category as Category, c.zone as Zon
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/chalets_table.png?raw=true "Table of Chalets")
 
-:thumbsup:
+Next, the [intra-zone links](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/intra-zone_links.cql).
+```cypher
+MATCH p = (c1:Chalet) -[:LINKS_TO]-> (c2:Chalet)
+  WHERE c1.zone = c2.zone
+RETURN p
+```
 
-Next run [show links](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/get_chalets.cql)
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/intra-zone_links.png?raw=true "Intra-Zone Links")
 
 
+And finally, the [inter-zone links](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/inter-zone_links.cql)
+```cypher
+MATCH p = (c1:Chalet) -[:LINKS_TO]-> (c2:Chalet)
+  WHERE c1.zone <> c2.zone
+RETURN p
+```
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/inter-zone_links.png?raw=true "Inter-Zone Links")
+
+Using zone as a label on chalets, means we can colour each chalet different in Neo4j Desktop. :thumbsup:
+
+For reference, the original full map of the market is here:
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/Bath-Christmas-Market-Map-2018.png?raw=true "Map")
 
 
 #### Visuals
