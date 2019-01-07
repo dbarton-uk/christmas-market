@@ -51,7 +51,9 @@ CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
 1. First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
 
 ```cypher
-LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
+LOAD CSV WITH HEADERS 
+  FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' 
+  AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
@@ -90,9 +92,9 @@ available in Neo4j Desktop. Zone names are also added as labels to enhance Neo4j
 2. Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
 
 ```cypher
-LOAD CSV WITH HEADERS FROM 
-	'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Links-Links.csv' 
-	AS csv
+LOAD CSV WITH HEADERS 
+  FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Links-Links.csv' 
+  AS csv
 MATCH (c1:Chalet {sequence: toInteger(csv.from)})
 MATCH (c2:Chalet {sequence: toInteger(csv.to)})
 MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
@@ -143,9 +145,6 @@ Using zone as a label on chalets, means we can colour each chalet different in N
 For reference, the original full map of the market is here:
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/Bath-Christmas-Market-Map-2018.png?raw=true "Map")
-
-
-#### Visuals
 
 ### Optimizing the route
 
