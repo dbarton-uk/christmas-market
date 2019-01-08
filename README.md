@@ -12,6 +12,8 @@ This mini project uses the Neo4j Graph Database to determine the optimum route t
 a set of mandatory chalets to purchase from. It also shows a user friendly visual of the route, using Neo4j Desktop and 
 making use of APOC capabilities with virtual nodes and relationships.
 
+**TODO** - add version of Neo4j
+
 Full source code, licensed under Apache License 2.0 is [available](https://github.com/dbarton-uk/christmas-market).
  
 **Use Cases**
@@ -148,6 +150,8 @@ Using zone as a label, means that in Neo4j Desktop, we can colour each chalet by
 
 ### Optimizing the route
 
+#### Choosing the gifts
+
 So now that we are set up and ready to go, let's choose some gifts.
 
 For Bro, something to share (109)
@@ -181,9 +185,55 @@ RETURN
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/selected_gifts.png?raw=true "Table of Selected Gifts")
 
+#### The Algorithm
+
+Now we know what we are going to purchase, lets find the optimal route around the market. Although the end result is
+a single cypher statement, the algorithm should be considered in two parts. The original cypher is split into two for 
+easier explaination.
+
+The first part is shown below:
+
+```cypher
+WITH  [109, 24, 169, 89, 32, 184, 181, 19] AS selection
+MATCH (c:Chalet) where c.number IN selection
+WITH collect(c) as chalets
+UNWIND chalets as c1
+WITH c1,
+     filter(c in chalets where c.number > c1.number) as c2s,
+     chalets
+UNWIND c2s as c2
+CALL algo.shortestPath.stream(c1, c2, 'cost', {relationshipQuery: 'LINKS_TO'}) YIELD nodeId, cost
+WITH c1,
+     c2,
+     max(cost) as totalCost,
+     collect(nodeId) as shortestHopNodeIds,
+     chalets
+MERGE (c1) -[r:SHORTEST_ROUTE_TO]- (c2)
+SET r.cost = totalCost
+SET r.shortestHopNodeIds = shortestHopNodeIds
+```
+
+The shortest path between each of the chalets ,represented by selected chalet numbers, is calculated using the 
+'out of the box' algo.shortestPath.stream function. New "SHORTEST_ROUTE_TO" relationships are created between each 
+distinct pair of selected chalets, with the total cost of the shortest path and the route of the shortest path stored
+on the new relationship. Some optimization is achieved by ensuring the shorted path between two nodes is only calculated
+once. 
+
+Let's take a look at the newly created shortest routes.
+
+```cypher
+WITH  [109, 24, 169, 89, 32, 184, 181, 19] AS selection
+MATCH p = (c1) -[:SHORTEST_ROUTE_TO]- (c2)
+  WHERE c1.number in selection and c2.number in selection
+RETURN p
+```
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/shortest_routes.png?raw=true "Mesh of Shortest Routes")
+
+Part 2 of the algorithm will use the total cost of these shortest routes to calculate a path that includes each of the
+chalets in the gift selection.
 
 
-#### Explanation of algorithm
 #### Visual of route
 
 ### Route visualisation
