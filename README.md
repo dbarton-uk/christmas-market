@@ -34,6 +34,10 @@ optimal route to take when visiting a given set of chalets.
 The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
 extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/data).
 
+For reference, the original map of the market is here:
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/Bath-Christmas-Market-Map-2018.png?raw=true "Map")
+
 ### Create constraints and indexes
 
 Run [create_constraints.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/create_constraints.cql)
@@ -111,11 +115,11 @@ And here is the schema. For clarity, category labels aren't shown.
 
 3. Check the data
 
-Ok, so, let's see what we have. First run [get chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/get_chalets.cql).
+Ok, so, let's see what we have. First the [chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/chalets.cql).
 
 ```cypher
 MATCH (c :Chalet)
-RETURN c.number as Number, c.name as Name, c.category as Category, c.zone as Zone
+RETURN c.number as Number, c.name as Name, c.description, c.category as Category, c.zone as Zone
   ORDER BY c.zone, c.category, c.number
 ```
 
@@ -140,15 +144,45 @@ RETURN p
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/inter-zone_links.png?raw=true "Inter-Zone Links")
 
-Using zone as a label on chalets, means we can colour each chalet different in Neo4j Desktop. :thumbsup:
-
-For reference, the original full map of the market is here:
-
-![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/Bath-Christmas-Market-Map-2018.png?raw=true "Map")
+Using zone as a label, means that in Neo4j Desktop, we can colour each chalet by zone. :thumbsup:
 
 ### Optimizing the route
 
-#### Select presents
+So now that we are set up and ready to go, let's choose some gifts.
+
+For Bro, something to share (109)
+For Nan, something for the garden. (24)
+For Grandpa, something tasty (169)
+For Toby the dog, some doggy treats (89)
+For the kids, something that won't get me in trouble (32, 184) 
+and for the missus something to keep her warm and sweet (181, 19)
+
+```cypher
+WITH [{ number: 109, for: "Bro"},
+       {number: 24, for: "Nan"},
+       {number: 169, for: "Grandpa"},
+       {number: 89, for: "Toby"},
+       {number: 32, for: "The Girl"},
+       {number: 184, for: "The Boy"},
+       {number: 181, for: "The Missus"},
+       {number: 19, for: "The Missus"}
+     ] as gifts
+UNWIND gifts as gift
+MATCH (c:Chalet { number: gift.number})
+RETURN
+  gift.number as Number,
+  gift.for as For,
+  c.name as Name,
+  c.description as Description,
+  c.zone as Zone,
+  c.category as Category
+  ORDER by c.zone, c.number
+```
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/selected_gifts.png?raw=true "Table of Selected Gifts")
+
+
+
 #### Explanation of algorithm
 #### Visual of route
 
