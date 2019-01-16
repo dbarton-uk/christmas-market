@@ -1,18 +1,18 @@
-# Gaming the Christmas Market
+# Gaming the Christmas Market 
 
 ## Introduction
 
 The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, when the city of Bath is 
-transformed into a veritable Winter Wonterland with a selection of gift chalets for all your Christmas purchasing 
+transformed into a veritable Winter Wonterland offering a selection of gift chalets for all your Christmas purchasing 
 requirements. Or at least, that's one perspective. For me, long in the tooth and a little bit grumpy, it's not quite so
-evocative. A log jam of people shuffling between chalets with their Christmas spirit disappearing faster than the mince 
+tempting. A log jam of people shuffling between chalets with their Christmas spirit disappearing faster than the mince 
 pies and hot toddy. When it comes to Christmas shopping, a high focus on efficiency is what is required! 
 
 This mini project uses the Neo4j Graph Database to determine the optimum route through the christmas market, given 
 a set of mandatory chalets to purchase from. It also shows a user friendly visual of the route, using Neo4j Desktop and 
 making use of APOC capabilities with virtual nodes and relationships.
 
-**TODO** - add version of Neo4j
+The project is written using Neo4j 3.4.10
 
 Full source code, licensed under Apache License 2.0 is [available](https://github.com/dbarton-uk/christmas-market).
  
@@ -159,7 +159,7 @@ For Nan, something for the garden. (24)
 For Grandpa, something tasty (169)
 For Toby the dog, some doggy treats (89)
 For the kids, something that won't get me in trouble (32, 184) 
-and for the missus something to keep her warm and sweet (181, 19)
+and for the trouble and strife, something to keep her warm and sweet (181, 19)
 
 ```cypher
 WITH [{ number: 109, for: "Bro"},
@@ -187,15 +187,14 @@ RETURN
 
 #### The Algorithm
 
-Now we know what we are going to purchase, lets find the optimal route around the market. Although the end result is
-a single cypher statement, the algorithm should be considered in two parts. The original cypher is split into two for 
-easier explaination.
+Now we know what we are going to purchase, lets find the optimal route around the market.
 
-The first part is shown below:
+Here is the bad boy cypher statement. An explanation is given below.
 
 ```cypher
-WITH  [109, 24, 169, 89, 32, 184, 181, 19] AS selection
-MATCH (c:Chalet) where c.number IN selection
+// Part 1
+WITH [109, 24, 169, 89, 32, 184, 181, 19] as selection
+MATCH (c:Chalet) where c.number in selection
 WITH collect(c) as chalets
 UNWIND chalets as c1
 WITH c1,
@@ -211,27 +210,98 @@ WITH c1,
 MERGE (c1) -[r:SHORTEST_ROUTE_TO]- (c2)
 SET r.cost = totalCost
 SET r.shortestHopNodeIds = shortestHopNodeIds
+// Part 2
+WITH c1,
+     c2,
+     (size(chalets) - 1) as level,
+     chalets
+CALL apoc.path.expandConfig(c1, {
+        relationshipFilter: 'SHORTEST_ROUTE_TO', 
+        minLevel: level, 
+        maxLevel: level, 
+        whitelistNodes: chalets, 
+        terminatorNodes: [c2], 
+        uniqueness: 'NODE_PATH' }
+      ) YIELD path
+WITH nodes(path) as orderedChalets,
+     extract(n in nodes(path) | id(n)) as ids,
+     reduce(cost = 0, x in relationships(path) | cost + x.cost) as totalCost,
+     extract(r in relationships(path) | r.shortestHopNodeIds) as shortestRouteNodeIds
+  ORDER BY totalCost LIMIT 1
+// Part 3
+UNWIND range(0, size(orderedChalets) - 1) as index
+UNWIND shortestRouteNodeIds[index] as shortestHopNodeId
+WITH orderedChalets, totalCost, index,
+     CASE WHEN shortestRouteNodeIds[index][0] = ids[index]
+     THEN tail(collect(shortestHopNodeId))
+       ELSE tail(reverse(collect(shortestHopNodeId)))
+       END as orderedHopNodeIds
+  ORDER BY index
+UNWIND orderedHopNodeIds as orderedHopNodeId
+MATCH (c: Chalet) where id(c) = orderedHopNodeId
+RETURN extract(c in orderedChalets | c.name) as names, 
+       extract(c in orderedChalets | c.number) as chaletNumbers, 
+       [orderedChalets[0].number] + collect(c.number) as chaletRoute, 
+      totalCost
 ```
 
-The shortest path between each of the chalets ,represented by selected chalet numbers, is calculated using the 
-'out of the box' algo.shortestPath.stream function. New "SHORTEST_ROUTE_TO" relationships are created between each 
-distinct pair of selected chalets, with the total cost of the shortest path and the route of the shortest path stored
-on the new relationship. Some optimization is achieved by ensuring the shorted path between two nodes is only calculated
-once. 
+The algorithm can be considered in three parts, commented in the cypher query above. Each part is explained below.
 
-Let's take a look at the newly created shortest routes.
+##### Part 1
+
+In Part 1, the shortest path between each of the chalets, is calculated using the graph algorithm `algo.shortestPath.stream` 
+procedure. "SHORTEST_ROUTE_TO" relationships are merged between each distinct pair of selected chalets, with the 
+total cost of the shortest path and the hops of the shortest path stored on the new relationship. Some optimization is 
+achieved by ensuring the shortest path between a pair of nodes is only calculated in one direction. 
+
+Running the following query give us the information calculated from part 1.
 
 ```cypher
 WITH  [109, 24, 169, 89, 32, 184, 181, 19] AS selection
-MATCH p = (c1) -[:SHORTEST_ROUTE_TO]- (c2)
-  WHERE c1.number in selection and c2.number in selection
-RETURN p
+MATCH p = (c1) -[r:SHORTEST_ROUTE_TO]- (c2)
+  WHERE c1.number in selection 
+  AND c2.number in selection
+RETURN 
+  c1.number as Chalet1, 
+  c2.number as Chalet2, 
+  r.cost as Cost, 
+  r.shortestHopNodeIds as Hops
+ORDER BY Chalet1, Chalet2
 ```
+
+And here is the output
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/shortest_routes.png?raw=true "Mesh of Shortest Routes")
 
-Part 2 of the algorithm will use the total cost of these shortest routes to calculate a path that includes each of the
-chalets in the gift selection.
+##### Part 2
+
+Part 2 of the algorithm uses these newly calculated costs to return the shortest path that includes each of the chalets 
+in the gift selection. To do this, it makes use of APOC's `apoc.path.expandConfig` procedure against the previously 
+calculated SHORTEST_ROUTE_TO mesh and then orders the resultant paths by total cost. The path expander config is shown
+below.
+
+```cypher
+CALL apoc.path.expandConfig(c1, {
+        relationshipFilter: 'SHORTEST_ROUTE_TO', 
+        minLevel: level, 
+        maxLevel: level, 
+        whitelistNodes: chalets, 
+        terminatorNodes: [c2], 
+        uniqueness: 'NODE_PATH' }
+      ) YIELD path
+```
+
+The config constrains the path expanding algorithm to ensure that all of the selected chalets nodes are visited once in 
+the SHORTEST_ROUTE_TO mesh. It does this by ensuring that the number of levels traversed (`minLevel` and `maxLevel`) is 
+equal to the number of chalets - 1 (7 in this case), and that all nodes traversed are unique. `whitelistNodes` limits 
+the paths to the chalet selection.
+
+The path with lowest cost is the route that we want to take.
+
+##### Part 3
+
+Part 3 of the algorithm expresses the optimal route using all the chalets available.
+
 
 
 #### Visual of route
