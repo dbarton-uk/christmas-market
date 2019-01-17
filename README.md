@@ -300,11 +300,19 @@ The path with lowest cost is the route that we want to take.
 
 ##### Part 3
 
-Part 3 of the algorithm expresses the optimal route using all the chalets available.
+Part 3 of the algorithm prepares the data for return, and gives the full route through the chalets. It uses the 
+`shortestHopNodeIds` found in part 1, tidying up the route, and ensuring consistent direction.
 
+For our selected chalets the resulting of running the algorithm is:
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/optimal_route.png?raw=true "Optimal Route")
+
+And there we have it!
 
 
 #### Visual of route
+
+
 
 ### Route visualisation
 ### Explanation of visual
