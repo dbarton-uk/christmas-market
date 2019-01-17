@@ -10,6 +10,9 @@ CREATE (c :Chalet {
   category: csv.Category
 })
 MERGE (z:Zone { name: csv.Zone})
-WITH c, csv.Category as category, z
-CALL apoc.create.addLabels( id(c), [apoc.text.capitalize(apoc.text.camelCase(category)), apoc.text.capitalize(apoc.text.camelCase(z.name))]) YIELD node
+WITH c, z
+CALL apoc.create.addLabels(
+  id(c),
+  [apoc.text.capitalize(apoc.text.camelCase(z.name))]
+) YIELD node
 MERGE (z) -[:HOSTS]-> (c)

@@ -9,7 +9,8 @@ tempting. A log jam of people shuffling between chalets with their Christmas spi
 pies and hot toddy. When it comes to Christmas shopping, a high focus on efficiency is what is required! 
 
 This mini project uses the Neo4j Graph Database to determine the optimum route through the christmas market, given 
-a set of mandatory chalets to purchase from. It also shows a user friendly visual of the route, using Neo4j Desktop and 
+a set of mandatory chalets to purchase from. ([The Travelling Salesman Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem)). 
+It also shows a user friendly visual of the route, using Neo4j Desktop and 
 making use of APOC capabilities with virtual nodes and relationships.
 
 The project is written using Neo4j 3.4.10
@@ -57,9 +58,8 @@ CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
 1. First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
 
 ```cypher
-LOAD CSV WITH HEADERS 
-  FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' 
-  AS csv
+LOAD CSV WITH HEADERS
+  FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
@@ -69,11 +69,11 @@ CREATE (c :Chalet {
   category: csv.Category
 })
 MERGE (z:Zone { name: csv.Zone})
-WITH c, csv.Category as category, z
-CALL apoc.create.addLabels( id(c), 
-		[apoc.text.capitalize(apoc.text.camelCase(category)), 
-	 	 apoc.text.capitalize(apoc.text.camelCase(z.name))]) 
-YIELD node
+WITH c, z
+CALL apoc.create.addLabels( 
+  id(c), 
+  [apoc.text.capitalize(apoc.text.camelCase(z.name))]
+) YIELD node
 MERGE (z) -[:HOSTS]-> (c)
 ```
 `Added 68 labels, created 68 nodes, set 308 properties, created 60 relationships, completed after 540 ms.`
@@ -85,15 +85,12 @@ in the github repository.
 
 - Create zone nodes based on zone data, embedded in the chalets csv.
 
-- Adds category labels to chalet nodes. 
-
 - Adds zone labels to chalet nodes
 
 - Links zones to chalets with a `:HOSTS` relationship.
 
 The chalets are split into 5 categories: Clothing and Accessories, Food and Drink, Gifts and Homeware, Health and Beauty 
-and Home and Garden. These categories were added as labels rather than attributes to improve the visualization options 
-available in Neo4j Desktop. Zone names are also added as labels to enhance Neo4j Desktop visualization options.
+and Home and Garden. Zone names are added as labels to enhance Neo4j Desktop visualization options.
 
 2. Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
 
@@ -307,11 +304,27 @@ For our selected chalets the resulting of running the algorithm is:
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/optimal_route.png?raw=true "Optimal Route")
 
+*Note: You may need to run the algorithm twice before getting consistent results! I have raised an issue [here](https://github.com/neo4j/neo4j/issues/12111) 
+which describes the problem in more detail.*
+
+-- TODO Reference issue
+
 And there we have it!
 
 
 #### Visual of route
 
+In this second section, we will look at how we can diplay the route data calculated in section 1, using the tools
+available in Neo4j Desktop. The idea is to produce a printable route planner, that guides the user from chalet to chalet.
+
+So, what would be useful to show in the route planner.
+
+1) A list of all chalets in the route
+2) Order in which to traverse the chalets
+3) Entry and exit chalets
+4) Coloured by zone
+5) Stop of chalets market larger to indicate to stop
+6) Name and number of chalet displayed
 
 
 ### Route visualisation
