@@ -317,17 +317,58 @@ And there we have it!
 In this second section, we will look at how we can diplay the route data calculated in section 1, using the tools
 available in Neo4j Desktop. The idea is to produce a printable route planner, that guides the user from chalet to chalet.
 
-So, what would be useful to show in the route planner.
+What would be useful to show in the route planner.
 
-1) A list of all chalets in the route
-2) Order in which to traverse the chalets
-3) Entry and exit chalets
-4) Coloured by zone
-5) Stop of chalets market larger to indicate to stop
-6) Name and number of chalet displayed
+1) A list of all chalets in the route.
+2) The order in which to traverse the chalets.
+3) Entry and exit points for the route.
+4) All chalets in the same zone should be have the same colour.
+5) Zone nodes should be displayed and attached to chalets, whenever there is a zone change.
+6) Name and number of chalet displayed.
+7) Selected chalets should be shown larger and indicated.
+
+We can do this using virtual nodes and relationships.
+
+The code:
+
+```cypher
+WITH [169, 109, 19, 24, 32, 184, 89, 181] AS selection,
+     [169, 108, 109, 134, 127, 126, 123, 119, 13, 15, 16, 17, 18, 19, 24, 45, 88, 34, 32, 74, 78, 83, 184, 83, 78, 74, 89, 176, 181] AS route
+MATCH (chalet :Chalet) WHERE chalet.number IN route
+WITH route, chalet,
+     CASE WHEN chalet.number in selection THEN 'Selected' ELSE 'NotSelected' END AS selected,
+     CASE WHEN chalet.number in selection THEN '* ' ELSE '' END AS marker
+CALL apoc.create.vNode([selected] + labels(chalet), {title: marker + '' + chalet.number+': ' + chalet.name}) YIELD node
+WITH route, collect(chalet) AS chalets, collect(node) as vChalets
+CALL apoc.create.vNode(['EntryExit'], { ee: 'Enter'}) yield node as enter
+CALL apoc.create.vNode(['EntryExit'], { ee: 'Exit'}) yield node as exit
+MATCH (firstChalet :Chalet { number: head(route)})
+MATCH (lastChalet :Chalet { number: last(route)})
+CALL apoc.create.vRelationship(enter, 'VIA', {}, vChalets[apoc.coll.indexOf(chalets, firstChalet)] ) YIELD rel as enteringVia
+CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, lastChalet)], 'VIA', {}, exit ) YIELD rel as exitingVia
+WITH apoc.coll.pairs(route) as hops, chalets, vChalets, enter, exit, enteringVia, exitingVia
+UNWIND hops as hop
+MATCH (from :Chalet {number: hop[0]}) -[l:LINKS_TO]- (to :Chalet {number: hop[1]})
+CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, from)], 'NEXT', properties(l), vChalets[apoc.coll.indexOf(chalets, to)] ) YIELD rel as next
+CALL apoc.create.vNode([null], { name: to.zone }) YIELD node as zone
+CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)] ) YIELD rel as hosts
+WITH chalets, vChalets, enter, exit, enteringVia, exitingVia, collect(next) as nexts, hops
+MATCH (startZone :Zone) -[:HOSTS]-> (startChalet:Chalet { number: hops[0][0]})
+CALL apoc.create.vNode(['Zone'], properties(startZone)) YIELD node as vStartZone
+CALL apoc.create.vRelationship(vStartZone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, startChalet)]) YIELD rel as startHost
+UNWIND hops as hop
+MATCH (zone1 :Zone) -[:HOSTS]-> (from:Chalet { number: hop[0]})
+MATCH (zone2 :Zone) -[:HOSTS]-> (to:Chalet { number: hop[1]})
+  WHERE apoc.coll.different([zone1, zone2])
+CALL apoc.create.vNode(['Zone'], properties(zone2)) YIELD node as zone
+CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)]) YIELD rel as host
+RETURN vChalets, enter, exit, enteringVia, exitingVia, nexts, vStartZone, startHost, collect(zone) as zones, collect(host) as hosts
+```
+
+And the result:
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/show_route.png?raw=true "Route Guide through chalets")
 
 
-### Route visualisation
-### Explanation of visual
-
-
+And that's it. I hope you enjoyed it, and if you get stuck in this year's Christmas Market, use neo4j to help you find 
+the best way through!
