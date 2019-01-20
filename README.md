@@ -3,21 +3,21 @@
 ## Introduction
 
 The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, when the city of Bath is 
-transformed into a veritable Winter Wonterland offering a selection of gift chalets for all your Christmas purchasing 
-requirements. Or at least, that's one perspective. For me, long in the tooth and a little bit grumpy, it's not quite so
+transformed into a veritable Winter Wonderland offering a selection of gift chalets for all your Christmas purchasing 
+requirements. Or at least that's one perspective. For me, long in the tooth and a little bit grumpy, it's not quite so
 tempting. A log jam of people shuffling between chalets with their Christmas spirit disappearing faster than the mince 
 pies and hot toddy. When it comes to Christmas shopping, a high focus on efficiency is what is required! 
 
-This mini project uses the Neo4j Graph Database to determine the optimum route through the christmas market, given 
-a set of mandatory chalets to purchase from. ([The Travelling Salesman Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem)). 
-It also shows a user friendly visual of the route, using Neo4j Desktop and 
-making use of APOC capabilities with virtual nodes and relationships.
+This mini project uses the Neo4j graph database to determine the optimum route through the Christmas Market, given 
+a set of mandatory chalets to purchase from. (a.k.a. [The Travelling Salesman Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem)). 
+It gives a user friendly visual of the route using Neo4j Desktop, making use of APOC's virtual nodes and relationships.
 
-The project is written using Neo4j 3.4.10
-
-Full source code, licensed under Apache License 2.0 is [available](https://github.com/dbarton-uk/christmas-market).
+The project is written using Neo4j 3.4.10 and licensed under Apache License 2.0. Full source code is 
+[available](https://github.com/dbarton-uk/christmas-market).
  
-**Use Cases**
+### Use Cases
+
+The project aims to address the following two use cases\"
 
 1. Optimum Route: Given a set of chalets to visit, define an optimum travel route between the chalets such that each of 
 the set is visited at least once.
@@ -28,14 +28,13 @@ the set is visited at least once.
 
 ### Overview
 
-The christmas market is split into zones, each defined by a unique name. A zone hosts a number of chalets, each with a 
+The Christmas <arket is split into zones, each defined by a unique name. A zone hosts a number of chalets, each with a 
 unique name and number. A chalet has a description and is categorized by the type of gift that it sells. Links between 
-chalets have been manually defined, with a cost assigned to each link. The link with its cost is used to determine the 
-optimal route to take when visiting a given set of chalets.
+chalets have been manually defined, with a cost assigned to each link. These links and their associated costs are used 
+to determine the optimal route to take when visiting a given set of chalets.
  
 60 chalets across 8 zones are defined, with the data sourced originally sourced from [The Bath Christmas Market website](https://bathchristmasmarket.co.uk) 
-The raw data is available in the linked [spreadsheet file](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers), 
-extracted to [csv](https://github.com/dbarton-uk/christmas-market/tree/master/data).
+The raw data is available in the [spreadsheet](https://github.com/dbarton-uk/christmas-market/blob/master/ChristmasMarket.numbers).
 
 For reference, the original map of the market is here:
 
@@ -55,7 +54,11 @@ CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
 
 ### Loading the data
 
-1. First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
+For reference, the schema is shown below.
+
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/schema.png?raw=true "Database Schema")
+
+First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
 
 ```cypher
 LOAD CSV WITH HEADERS
@@ -80,10 +83,9 @@ MERGE (z) -[:HOSTS]-> (c)
 
 The load chalet script does the following:
 
-- Creates chalet nodes based on [chalet csv data](https://github.com/dbarton-uk/christmas-market/blob/master/data/Chalets-Chalets.csv)
-in the github repository.
+- Creates chalet nodes based on the [extracted chalet csv data](https://github.com/dbarton-uk/christmas-market/blob/master/data/Chalets-Chalets.csv).
 
-- Create zone nodes based on zone data, embedded in the chalets csv.
+- Create zone nodes based on zone data.
 
 - Adds zone labels to chalet nodes
 
@@ -92,7 +94,7 @@ in the github repository.
 The chalets are split into 5 categories: Clothing and Accessories, Food and Drink, Gifts and Homeware, Health and Beauty 
 and Home and Garden. Zone names are added as labels to enhance Neo4j Desktop visualization options.
 
-2. Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
+Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
 
 ```cypher
 LOAD CSV WITH HEADERS 
@@ -105,14 +107,11 @@ MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
 
 `Set 87 properties, created 87 relationships, completed after 347 ms.`
 
-The script creates the links between chalets based on the link csv data in the [repository](https://github.com/dbarton-uk/christmas-market/blob/master/data/Links-Links.csv)
+The script creates the links between chalets based on the [extracted link csv data](https://github.com/dbarton-uk/christmas-market/blob/master/data/Links-Links.csv)
 A cost is defined for each link, which is used by the algorithm when calculating an optimal route.
 
-And here is the schema. For clarity, category labels aren't shown.
 
-![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/schema.png?raw=true "Database Schema")
-
-3. Check the data
+### Checking the data
 
 Ok, so, let's see what we have. First the [chalets](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/chalets.cql).
 
@@ -134,7 +133,7 @@ RETURN p
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/intra-zone_links.png?raw=true "Intra-Zone Links")
 
 
-And finally, the [inter-zone links](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/inter-zone_links.cql)
+And finally, the [inter-zone links](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/inter-zone_links.cql).
 ```cypher
 MATCH p = (c1:Chalet) -[:LINKS_TO]-> (c2:Chalet)
   WHERE c1.zone <> c2.zone
@@ -145,11 +144,11 @@ RETURN p
 
 Using zone as a label, means that in Neo4j Desktop, we can colour each chalet by zone. :thumbsup:
 
-### Optimizing the route
+## Optimizing the route
 
-#### Choosing the gifts
+### Choosing the gifts
 
-So now that we are set up and ready to go, let's choose some gifts.
+So now that we are set up and ready to go, let's choose the chalets where we are going to purchase gifts from.
 
 For Bro, something to share (109)
 For Nan, something for the garden. (24)
@@ -182,14 +181,14 @@ RETURN
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/selected_gifts.png?raw=true "Table of Selected Gifts")
 
-#### The Algorithm
+### The Algorithm
 
-Now we know what we are going to purchase, lets find the optimal route around the market.
+So to the main event. Let's find the optimal route around the market.
 
 Here is the bad boy cypher statement. An explanation is given below.
 
 ```cypher
-// Part 1
+// Step 1
 WITH [109, 24, 169, 89, 32, 184, 181, 19] as selection
 MATCH (c:Chalet) where c.number in selection
 WITH collect(c) as chalets
@@ -207,7 +206,7 @@ WITH c1,
 MERGE (c1) -[r:SHORTEST_ROUTE_TO]- (c2)
 SET r.cost = totalCost
 SET r.shortestHopNodeIds = shortestHopNodeIds
-// Part 2
+// Step 2
 WITH c1,
      c2,
      (size(chalets) - 1) as level,
@@ -225,7 +224,7 @@ WITH nodes(path) as orderedChalets,
      reduce(cost = 0, x in relationships(path) | cost + x.cost) as totalCost,
      extract(r in relationships(path) | r.shortestHopNodeIds) as shortestRouteNodeIds
   ORDER BY totalCost LIMIT 1
-// Part 3
+// Step 3
 UNWIND range(0, size(orderedChalets) - 1) as index
 UNWIND shortestRouteNodeIds[index] as shortestHopNodeId
 WITH orderedChalets, totalCost, index,
@@ -242,16 +241,16 @@ RETURN extract(c in orderedChalets | c.name) as names,
       totalCost
 ```
 
-The algorithm can be considered in three parts, commented in the cypher query above. Each part is explained below.
+The algorithm should be considered in three steps - as shown in the cypher query above. Each step is explained below.
 
-##### Part 1
+#### Step 1
 
-In Part 1, the shortest path between each of the chalets, is calculated using the graph algorithm `algo.shortestPath.stream` 
+In Step 1, the shortest path between each of the chalets, is calculated using the graph algorithm `algo.shortestPath.stream` 
 procedure. "SHORTEST_ROUTE_TO" relationships are merged between each distinct pair of selected chalets, with the 
-total cost of the shortest path and the hops of the shortest path stored on the new relationship. Some optimization is 
+total cost of the shortest path and the hops of the shortest path stored on the relationship. Some optimization is 
 achieved by ensuring the shortest path between a pair of nodes is only calculated in one direction. 
 
-Running the following query give us the information calculated from part 1.
+Running the following query give us the information calculated in Step 1.
 
 ```cypher
 WITH  [109, 24, 169, 89, 32, 184, 181, 19] AS selection
@@ -270,35 +269,24 @@ And here is the output
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/shortest_routes.png?raw=true "Mesh of Shortest Routes")
 
-##### Part 2
+#### Step 2
 
-Part 2 of the algorithm uses these newly calculated costs to return the shortest path that includes each of the chalets 
-in the gift selection. To do this, it makes use of APOC's `apoc.path.expandConfig` procedure against the previously 
-calculated SHORTEST_ROUTE_TO mesh and then orders the resultant paths by total cost. The path expander config is shown
-below.
+Step 2 of the algorithm uses these newly calculated costs to return the shortest path that includes all of the selected 
+chalets. The step makes use of APOC's `apoc.path.expandConfig` procedure, using SHORTEST_ROUTE_TO relationships to 
+determine paths. Resultant paths are ordered by total cost. 
 
-```cypher
-CALL apoc.path.expandConfig(c1, {
-        relationshipFilter: 'SHORTEST_ROUTE_TO', 
-        minLevel: level, 
-        maxLevel: level, 
-        whitelistNodes: chalets, 
-        terminatorNodes: [c2], 
-        uniqueness: 'NODE_PATH' }
-      ) YIELD path
-```
-
-The config constrains the path expanding algorithm to ensure that all of the selected chalets nodes are visited once in 
-the SHORTEST_ROUTE_TO mesh. It does this by ensuring that the number of levels traversed (`minLevel` and `maxLevel`) is 
-equal to the number of chalets - 1 (7 in this case), and that all nodes traversed are unique. `whitelistNodes` limits 
-the paths to the chalet selection.
+The path expander config constrains the path expanding algorithm to ensure that all of the selected chalets nodes are 
+visited only once within the SHORTEST_ROUTE_TO mesh. It does this by ensuring that the number of levels traversed 
+(`minLevel` and `maxLevel`) is equal to the number of chalets - 1 (7 in this case), and that all nodes traversed are unique.
+ `whitelistNodes` limits the paths to the chalet selection, which provides some optimisation.
 
 The path with lowest cost is the route that we want to take.
 
-##### Part 3
+#### Step 3
 
-Part 3 of the algorithm prepares the data for return, and gives the full route through the chalets. It uses the 
-`shortestHopNodeIds` found in part 1, tidying up the route, and ensuring consistent direction.
+Step 3 of the algorithm prepares the data for return, and provides a list of the full route through the chalets. 
+It uses the `shortestHopNodeIds` calculated in Step 1, it tidies up the route removing duplicates and it ensures a 
+consistent direction.
 
 For our selected chalets the resulting of running the algorithm is:
 
@@ -307,12 +295,10 @@ For our selected chalets the resulting of running the algorithm is:
 *Note: You may need to run the algorithm twice before getting consistent results! I have raised an issue [here](https://github.com/neo4j/neo4j/issues/12111) 
 which describes the problem in more detail.*
 
--- TODO Reference issue
+So there we have it. An optimal route through the Christmas Market, stopping at all selected chalets. Next let's see if
+we can get a good visual of the route, using the functionality of Neo4j Desktop.
 
-And there we have it!
-
-
-#### Visual of route
+## Visualizing the route
 
 In this second section, we will look at how we can diplay the route data calculated in section 1, using the tools
 available in Neo4j Desktop. The idea is to produce a printable route planner, that guides the user from chalet to chalet.

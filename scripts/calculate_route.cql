@@ -1,5 +1,5 @@
 // Calculate Route
-// Part 1
+// Step 1
 WITH [109, 24, 169, 89, 32, 184, 181, 19] as selection
 MATCH (c:Chalet) where c.number in selection
 WITH collect(c) as chalets
@@ -17,7 +17,7 @@ WITH c1,
 MERGE (c1) -[r:SHORTEST_ROUTE_TO]- (c2)
 SET r.cost = totalCost
 SET r.shortestHopNodeIds = shortestHopNodeIds
-// Part 2
+// Step 2
 WITH c1,
      c2,
      (size(chalets) - 1) as level,
@@ -35,7 +35,7 @@ WITH nodes(path) as orderedChalets,
      reduce(cost = 0, x in relationships(path) | cost + x.cost) as totalCost,
      extract(r in relationships(path) | r.shortestHopNodeIds) as shortestRouteNodeIds
   ORDER BY totalCost LIMIT 1
-// Part 3
+// Step 3
 UNWIND range(0, size(orderedChalets) - 1) as index
 UNWIND shortestRouteNodeIds[index] as shortestHopNodeId
 WITH orderedChalets, totalCost, index,
