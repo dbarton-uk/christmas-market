@@ -359,8 +359,12 @@ WITH chalets, vChalets, enter, exit, enteringVia, exitingVia, collect(next) as n
 MATCH (startZone :Zone) -[:HOSTS]-> (startChalet:Chalet { number: hops[0][0]})
 CALL apoc.create.vNode(['Zone'], properties(startZone)) 
   YIELD node as vStartZone
-CALL apoc.create.vRelationship(vStartZone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, startChalet)]) 
-  YIELD rel as startHost
+CALL apoc.create.vRelationship(
+	vStartZone, 
+	'HOSTS', 
+	{}, 
+	vChalets[apoc.coll.indexOf(chalets, startChalet)]
+	) YIELD rel as startHost
 UNWIND hops as hop
 MATCH (zone1 :Zone) -[:HOSTS]-> (from:Chalet { number: hop[0]})
 MATCH (zone2 :Zone) -[:HOSTS]-> (to:Chalet { number: hop[1]})
