@@ -300,61 +300,96 @@ we can get a good visual of the route, using the functionality of Neo4j Desktop.
 
 ## Visualizing the route
 
-In this second section, we will look at how we can diplay the route data calculated in section 1, using the tools
-available in Neo4j Desktop. The idea is to produce a printable route planner, that guides the user from chalet to chalet.
+In this second section, we will look at how we can display the route calculated by the algorithm in the first section.
+The idea is to produce a useable route planner, that guides the user from chalet to chalet.
 
-What would be useful to show in the route planner.
+Here is the wishlist of useful things to display in the the route planner.
 
-1) A list of all chalets in the route.
+1) The chalets in the route.
 2) The order in which to traverse the chalets.
 3) Entry and exit points for the route.
-4) All chalets in the same zone should be have the same colour.
-5) Zone nodes should be displayed and attached to chalets, whenever there is a zone change.
-6) Name and number of chalet displayed.
-7) Selected chalets should be shown larger and indicated.
+4) Chalets in the same zone coloured the same.
+5) Zone nodes attached to chalets to indicate whenever there is a zone change.
+6) Chalet names and numbers displayed.
+7) Selected gift chalets should be indicated.
 
-We can do this using virtual nodes and relationships.
+Here is the visual of the route, satisfying the wishlist above. 
 
-The code:
+![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/show_route.png?raw=true "Route Guide through chalets")
+
+APOC's virtual nodes and relationships help achieve this custom visual. The cypher code is shown and explained below.
+
 
 ```cypher
 WITH [169, 109, 19, 24, 32, 184, 89, 181] AS selection,
      [169, 108, 109, 134, 127, 126, 123, 119, 13, 15, 16, 17, 18, 19, 24, 45, 88, 34, 32, 74, 78, 83, 184, 83, 78, 74, 89, 176, 181] AS route
-MATCH (chalet :Chalet) WHERE chalet.number IN route
+MATCH (chalet :Chalet) WHERE chalet.number IN route 
 WITH route, chalet,
-     CASE WHEN chalet.number in selection THEN 'Selected' ELSE 'NotSelected' END AS selected,
-     CASE WHEN chalet.number in selection THEN '* ' ELSE '' END AS marker
-CALL apoc.create.vNode([selected] + labels(chalet), {title: marker + '' + chalet.number+': ' + chalet.name}) YIELD node
+     CASE WHEN chalet.number in selection 
+     	  THEN 'Selected' 
+     	  ELSE 'NotSelected' 
+     	  END AS selected,
+     CASE WHEN chalet.number in selection 
+     	  THEN '* '+chalet.number+': '+chalet.name 
+          ELSE chalet.number+': '+chalet.name 
+          END AS title
+CALL apoc.create.vNode([selected] + labels(chalet), {title: title}) YIELD node 
 WITH route, collect(chalet) AS chalets, collect(node) as vChalets
-CALL apoc.create.vNode(['EntryExit'], { ee: 'Enter'}) yield node as enter
-CALL apoc.create.vNode(['EntryExit'], { ee: 'Exit'}) yield node as exit
+CALL apoc.create.vNode(['EntryExit'], { ee: 'Enter'}) YIELD node as enter 
+CALL apoc.create.vNode(['EntryExit'], { ee: 'Exit'}) YIELD node as exit 
 MATCH (firstChalet :Chalet { number: head(route)})
 MATCH (lastChalet :Chalet { number: last(route)})
-CALL apoc.create.vRelationship(enter, 'VIA', {}, vChalets[apoc.coll.indexOf(chalets, firstChalet)] ) YIELD rel as enteringVia
-CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, lastChalet)], 'VIA', {}, exit ) YIELD rel as exitingVia
+CALL apoc.create.vRelationship(enter, 'VIA', {}, vChalets[apoc.coll.indexOf(chalets, firstChalet)] ) 
+  YIELD rel as enteringVia
+CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, lastChalet)], 'VIA', {}, exit ) 
+  YIELD rel as exitingVia
 WITH apoc.coll.pairs(route) as hops, chalets, vChalets, enter, exit, enteringVia, exitingVia
 UNWIND hops as hop
-MATCH (from :Chalet {number: hop[0]}) -[l:LINKS_TO]- (to :Chalet {number: hop[1]})
-CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, from)], 'NEXT', properties(l), vChalets[apoc.coll.indexOf(chalets, to)] ) YIELD rel as next
+MATCH (from :Chalet {number: hop[0]}) -[l:LINKS_TO]- (to :Chalet {number: hop[1]}) 
+CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, from)], 'NEXT', properties(l), vChalets[apoc.coll.indexOf(chalets, to)] ) 
+  YIELD rel as next
 CALL apoc.create.vNode([null], { name: to.zone }) YIELD node as zone
-CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)] ) YIELD rel as hosts
+CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)] ) 
+  YIELD rel as hosts
 WITH chalets, vChalets, enter, exit, enteringVia, exitingVia, collect(next) as nexts, hops
 MATCH (startZone :Zone) -[:HOSTS]-> (startChalet:Chalet { number: hops[0][0]})
-CALL apoc.create.vNode(['Zone'], properties(startZone)) YIELD node as vStartZone
-CALL apoc.create.vRelationship(vStartZone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, startChalet)]) YIELD rel as startHost
+CALL apoc.create.vNode(['Zone'], properties(startZone)) 
+  YIELD node as vStartZone
+CALL apoc.create.vRelationship(vStartZone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, startChalet)]) 
+  YIELD rel as startHost
 UNWIND hops as hop
 MATCH (zone1 :Zone) -[:HOSTS]-> (from:Chalet { number: hop[0]})
 MATCH (zone2 :Zone) -[:HOSTS]-> (to:Chalet { number: hop[1]})
   WHERE apoc.coll.different([zone1, zone2])
-CALL apoc.create.vNode(['Zone'], properties(zone2)) YIELD node as zone
-CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)]) YIELD rel as host
-RETURN vChalets, enter, exit, enteringVia, exitingVia, nexts, vStartZone, startHost, collect(zone) as zones, collect(host) as hosts
+CALL apoc.create.vNode(['Zone'], properties(zone2)) 
+  YIELD node as zone
+CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)]) 
+  YIELD rel as host
+RETURN 
+	vChalets, 
+	enter, 
+	exit, 
+	enteringVia, 
+	exitingVia, 
+	nexts, 
+	vStartZone, 
+	startHost, 
+	collect(zone) as zones, 
+	collect(host) as hosts
 ```
 
-And the result:
+First chalets are matched based on the route calculated by the algorithm in section 1. Chalets are then marked as 
+Selected or NotSelected based on whether or not they also exist in the selection list. The text to display on each chalet
+node is defined by `title` and virtual nodes are createf for each chalet with labels and properties reflecting the matches.
 
-![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/show_route.png?raw=true "Route Guide through chalets")
+Virtual nodes for entry and exit points are created, and linked with a virtual `VIA` relationship to the first and last
+chalets in the route. 
 
+Virtual `NEXT` relationships are created to show the hops between each chalet. The `NEXT` relationship provides directionality
+from chalet to chalet through the route.
 
-And that's it. I hope you enjoyed it, and if you get stuck in this year's Christmas Market, use neo4j to help you find 
-the best way through!
+Virtual nodes are created for the zone, and attached to the virtual chalet nodes wherever the chalet change zone.
+
+## Conclusion
+
+And that's it. I hope you have enjoyed it. It's a bit late now for the 2018 Christmas Market, but maybe next year!
