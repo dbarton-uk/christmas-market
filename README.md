@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, when the city of Bath is 
+The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is an annual extravaganza, when the city of Bath is 
 transformed into a veritable Winter Wonderland offering a selection of gift chalets for all your Christmas purchasing 
 requirements. Or at least that's one perspective. For me, long in the tooth and a little bit grumpy, it's not quite so
 evocative. A log jam of people shuffling between chalets with their Christmas spirit disappearing faster than the mince 
@@ -156,7 +156,7 @@ So now that we are set up and ready to go, let's choose the chalets that we are 
 - For Grandpa, something tasty (no. 169)
 - For Toby the dog, some doggy treats (no. 89)
 - For the Kids, something that won't get me in trouble (no. 32, no. 184) 
-- For the Trouble, something to keep her warm and sweet (no. 181, no. 19)
+- For the Trouble and Strife, something to keep her warm and sweet (no. 181, no. 19)
 
 ```cypher
 WITH [{ number: 109, for: "Bro"},
