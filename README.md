@@ -5,7 +5,7 @@
 The [Bath Christmas Market](https://bathchristmasmarket.co.uk) is a yearly extravaganza, when the city of Bath is 
 transformed into a veritable Winter Wonderland offering a selection of gift chalets for all your Christmas purchasing 
 requirements. Or at least that's one perspective. For me, long in the tooth and a little bit grumpy, it's not quite so
-tempting. A log jam of people shuffling between chalets with their Christmas spirit disappearing faster than the mince 
+evocative. A log jam of people shuffling between chalets with their Christmas spirit disappearing faster than the mince 
 pies and hot toddy. When it comes to Christmas shopping, a high focus on efficiency is what is required! 
 
 This mini project uses the Neo4j graph database to determine the optimum route through the Christmas Market, given 
@@ -17,10 +17,10 @@ The project is written using Neo4j 3.4.10 and licensed under Apache License 2.0.
  
 ### Use Cases
 
-The project aims to address the following two use cases\"
+The project looks to address the following two use cases:
 
-1. Optimum Route: Given a set of chalets to visit, define an optimum travel route between the chalets such that each of 
-the set is visited at least once.
+1. Find Optimum Route: Given a set of chalets to visit, define an optimum travel route between the chalets such that each 
+of the set is visited at least once.
  
 2. Visualize Route: Given the optimum route, provide a user friendly visual of the route.
 
@@ -28,7 +28,7 @@ the set is visited at least once.
 
 ### Overview
 
-The Christmas <arket is split into zones, each defined by a unique name. A zone hosts a number of chalets, each with a 
+The Christmas Market is split into zones, each defined by a unique name. A zone hosts a number of chalets, each with a 
 unique name and number. A chalet has a description and is categorized by the type of gift that it sells. Links between 
 chalets have been manually defined, with a cost assigned to each link. These links and their associated costs are used 
 to determine the optimal route to take when visiting a given set of chalets.
@@ -54,15 +54,16 @@ CREATE CONSTRAINT ON (c:Chalet) ASSERT c.sequence IS UNIQUE;
 
 ### Loading the data
 
-For reference, the schema is shown below.
+The schema is shown below.
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/schema.png?raw=true "Database Schema")
 
-First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql)
+First run [load_chalets.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_chalets.cql).
 
 ```cypher
 LOAD CSV WITH HEADERS
-  FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' AS csv
+  FROM 'https://raw.githubusercontent.com/dbarton-uk/christmas-market/master/data/Chalets-Chalets.csv' 
+  AS csv
 CREATE (c :Chalet {
   sequence: toInteger(csv.Id),
   number: toInteger(csv.Number),
@@ -92,9 +93,9 @@ The load chalet script does the following:
 - Links zones to chalets with a `:HOSTS` relationship.
 
 The chalets are split into 5 categories: Clothing and Accessories, Food and Drink, Gifts and Homeware, Health and Beauty 
-and Home and Garden. Zone names are added as labels to enhance Neo4j Desktop visualization options.
+and Home and Garden. Zone names are added as redundant labels to improve Neo4j Desktop visualization options. 
 
-Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql)
+Next run [load_links.cql](https://github.com/dbarton-uk/christmas-market/blob/master/scripts/load_links.cql).
 
 ```cypher
 LOAD CSV WITH HEADERS 
@@ -107,7 +108,7 @@ MERGE (c1) -[:LINKS_TO {cost: toInteger(csv.cost)}]-> (c2)
 
 `Set 87 properties, created 87 relationships, completed after 347 ms.`
 
-The script creates the links between chalets based on the [extracted link csv data](https://github.com/dbarton-uk/christmas-market/blob/master/data/Links-Links.csv)
+The script creates the links between chalets based on the [extracted link csv data](https://github.com/dbarton-uk/christmas-market/blob/master/data/Links-Links.csv).
 A cost is defined for each link, which is used by the algorithm when calculating an optimal route.
 
 
@@ -142,20 +143,20 @@ RETURN p
 
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/inter-zone_links.png?raw=true "Inter-Zone Links")
 
-Using zone as a label, means that in Neo4j Desktop, we can colour each chalet by zone. :thumbsup:
+Using zone as a label, means that in Neo4j Desktop, we can colour each chalet by zone. Lovely Jubbly. :thumbsup:
 
 ## Optimizing the route
 
 ### Choosing the gifts
 
-So now that we are set up and ready to go, let's choose the chalets where we are going to purchase gifts from.
+So now that we are set up and ready to go, let's choose the chalets that we are going to purchase gifts from.
 
-For Bro, something to share (109)
-For Nan, something for the garden. (24)
-For Grandpa, something tasty (169)
-For Toby the dog, some doggy treats (89)
-For the kids, something that won't get me in trouble (32, 184) 
-and for the trouble and strife, something to keep her warm and sweet (181, 19)
+- For Bro, something to share (no. 109)
+- For Nan, something for the garden. (no. 24)
+- For Grandpa, something tasty (no. 169)
+- For Toby the dog, some doggy treats (no. 89)
+- For the Kids, something that won't get me in trouble (no. 32, no. 184) 
+- For the Trouble, something to keep her warm and sweet (no. 181, no. 19)
 
 ```cypher
 WITH [{ number: 109, for: "Bro"},
@@ -185,7 +186,7 @@ RETURN
 
 So to the main event. Let's find the optimal route around the market.
 
-Here is the bad boy cypher statement. An explanation is given below.
+Here is the bad boy cypher statement, augmented with steps. An explanation is given below.
 
 ```cypher
 // Step 1
@@ -241,7 +242,7 @@ RETURN extract(c in orderedChalets | c.name) as names,
       totalCost
 ```
 
-The algorithm should be considered in three steps - as shown in the cypher query above. Each step is explained below.
+The algorithm should be considered in three steps. Each step is explained below.
 
 #### Step 1
 
@@ -250,7 +251,7 @@ procedure. "SHORTEST_ROUTE_TO" relationships are merged between each distinct pa
 total cost of the shortest path and the hops of the shortest path stored on the relationship. Some optimization is 
 achieved by ensuring the shortest path between a pair of nodes is only calculated in one direction. 
 
-Running the following query give us the information calculated in Step 1.
+To get a picture of the result of Step 1, running the following query give us the output of step 1.
 
 ```cypher
 WITH  [109, 24, 169, 89, 32, 184, 181, 19] AS selection
@@ -265,8 +266,6 @@ RETURN
 ORDER BY Chalet1, Chalet2
 ```
 
-And here is the output
-
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/shortest_routes.png?raw=true "Mesh of Shortest Routes")
 
 #### Step 2
@@ -280,7 +279,7 @@ visited only once within the SHORTEST_ROUTE_TO mesh. It does this by ensuring th
 (`minLevel` and `maxLevel`) is equal to the number of chalets - 1 (7 in this case), and that all nodes traversed are unique.
  `whitelistNodes` limits the paths to the chalet selection, which provides some optimisation.
 
-The path with lowest cost is the route that we want to take.
+The path returned with lowest cost is the route that we want to take.
 
 #### Step 3
 
@@ -293,9 +292,9 @@ For our selected chalets the resulting of running the algorithm is:
 ![alt text](https://github.com/dbarton-uk/christmas-market/blob/master/images/optimal_route.png?raw=true "Optimal Route")
 
 *Note: You may need to run the algorithm twice before getting consistent results! I have raised an issue [here](https://github.com/neo4j/neo4j/issues/12111) 
-which describes the problem in more detail.*
+which describes the problem in more detail.* If anyone has any further insight here, please let me know!
 
-So there we have it. An optimal route through the Christmas Market, stopping at all selected chalets. Next let's see if
+So there we have it. An optimal route through the Christmas Market, stopping at all selected chalets. Now let's see if
 we can get a good visual of the route, using the functionality of Neo4j Desktop.
 
 ## Visualizing the route
@@ -322,7 +321,8 @@ APOC's virtual nodes and relationships help achieve this custom visual. The cyph
 
 ```cypher
 WITH [169, 109, 19, 24, 32, 184, 89, 181] AS selection,
-     [169, 108, 109, 134, 127, 126, 123, 119, 13, 15, 16, 17, 18, 19, 24, 45, 88, 34, 32, 74, 78, 83, 184, 83, 78, 74, 89, 176, 181] AS route
+     [169, 108, 109, 134, 127, 126, 123, 119, 13, 15, 16, 17, 18, 19, 24, 45, 88, 34, 32, 74, 78, 83, 
+      184, 83, 78, 74, 89, 176, 181] AS route
 MATCH (chalet :Chalet) WHERE chalet.number IN route 
 WITH route, chalet,
      CASE WHEN chalet.number in selection 
@@ -346,8 +346,12 @@ CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, lastChalet)],
 WITH apoc.coll.pairs(route) as hops, chalets, vChalets, enter, exit, enteringVia, exitingVia
 UNWIND hops as hop
 MATCH (from :Chalet {number: hop[0]}) -[l:LINKS_TO]- (to :Chalet {number: hop[1]}) 
-CALL apoc.create.vRelationship(vChalets[apoc.coll.indexOf(chalets, from)], 'NEXT', properties(l), vChalets[apoc.coll.indexOf(chalets, to)] ) 
-  YIELD rel as next
+CALL apoc.create.vRelationship(
+	vChalets[apoc.coll.indexOf(chalets, from)], 
+	'NEXT', 
+	properties(l), 
+	vChalets[apoc.coll.indexOf(chalets, to)] 
+	)  YIELD rel as next
 CALL apoc.create.vNode([null], { name: to.zone }) YIELD node as zone
 CALL apoc.create.vRelationship(zone, 'HOSTS', {}, vChalets[apoc.coll.indexOf(chalets, to)] ) 
   YIELD rel as hosts
@@ -378,18 +382,21 @@ RETURN
 	collect(host) as hosts
 ```
 
-First chalets are matched based on the route calculated by the algorithm in section 1. Chalets are then marked as 
-Selected or NotSelected based on whether or not they also exist in the selection list. The text to display on each chalet
-node is defined by `title` and virtual nodes are createf for each chalet with labels and properties reflecting the matches.
+First chalets are matched based on the route calculated by the algorithm in Section 1. Chalets are then marked as 
+"Selected" or "NotSelected" based on whether or not they also exist in the original selection list. The text to display 
+on each chaletnode is defined by `title` and virtual nodes are created for each chalet with labels and properties 
+reflecting the matches. 
 
 Virtual nodes for entry and exit points are created, and linked with a virtual `VIA` relationship to the first and last
 chalets in the route. 
 
 Virtual `NEXT` relationships are created to show the hops between each chalet. The `NEXT` relationship provides directionality
-from chalet to chalet through the route.
+from chalet to chalet through the route. The original 
 
-Virtual nodes are created for the zone, and attached to the virtual chalet nodes wherever the chalet change zone.
+Virtual nodes are created for the zone, and attached to a virtual chalet nodes whenever there is a zone change.
 
 ## Conclusion
 
-And that's it. I hope you have enjoyed it. It's a bit late now for the 2018 Christmas Market, but maybe next year!
+And that's it, typically it took a little longer than I expected and it's a bit late now for the 2018 Christmas Market. Maybe next year!
+
+I hope you enjoyed it, and any questions or comments please feel free to drop me a line. 
